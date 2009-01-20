@@ -89,6 +89,7 @@ public class SpnImpl {
    * @return the resulting cyphertext
    */
   public BitSet SpnEncBlock(BitSet p, BitSet[] roundKeys) {
+    p = Util.copyBitSet(p, 16);
     if (roundKeys.length != 5) {
       throw new IllegalArgumentException("There should be exactly 5 round keys");
     }
@@ -108,6 +109,7 @@ public class SpnImpl {
    * @return the resulting plaintext
    */
   public BitSet SpnDecBlock(BitSet c, BitSet[] roundKeys) {
+    c = Util.copyBitSet(c, 16);
     if (roundKeys.length != 5) {
       throw new IllegalArgumentException("There should be exactly 5 round keys");
     }

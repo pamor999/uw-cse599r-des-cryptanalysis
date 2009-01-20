@@ -39,5 +39,30 @@ public class Util {
     }
     return result;
   }
+  
+  public static boolean equalsBitSet(BitSet a, BitSet b, int totalBits) {
+    for(int i = 0; i < totalBits; i++) {
+      boolean ca = a.get(i);
+      boolean cb = b.get(i);
+      if (ca != cb) return false;
+    }
+    return true;
+  }
+  
+  public static BitSet copyBitSet(BitSet set, int totalBits) {
+    BitSet newset = new BitSet();
+    for (int i = 0; i < totalBits; i++) {
+      newset.set(i, set.get(i));
+    }
+    return newset;
+    
+  }
+  
+  public static BitSet concatenate(BitSet a, int totalBitsA, BitSet b, int totalBitsB) {
+    for(int i = 0; i < totalBitsB; i++) {
+      a.set(totalBitsA + i, b.get(i));
+    }
+    return a;
+  }
 
 }
