@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 public class SpnImplTest extends TestCase {
   
   public void testRoundTrip() {
-    System.out.println("-----");
+    System.out.println("-----SpnRoundTrip");
     BitSet p = Util.toBitSet(0xBEEF, 16);
     BitSet[] keys = new BitSet[] {
         Util.toBitSet(0x1234, 16),
@@ -24,6 +24,7 @@ public class SpnImplTest extends TestCase {
     DesImplTest.printBitSet(c, 16, 16);
     BitSet pnew = spn.SpnDecBlock(c, keys);
     DesImplTest.printBitSet(pnew, 16, 16);
+    assertTrue(Util.equalsBitSet(p, pnew, 16));
     
   }
   
