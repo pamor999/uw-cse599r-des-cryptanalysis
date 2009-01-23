@@ -41,8 +41,7 @@ public class UtilTest extends TestCase {
     value = 255;
     s = Util.toBitSet(value, totalBits);
     DesImplTest.printBitSet(s, 8, 8);
-    
-    
+   
   }
 
 }

@@ -3,8 +3,11 @@ import java.util.BitSet;
 
 public class LinearCryptanalysis {
   
-  // Prints the Linear Approximation for Sbox 5 (viz Matsui Paper)
-  public static void main(String[] args) {
+  // Prints the Linear Approximation for all Sboxes
+  /**
+ * @param args
+ */
+public static void main(String[] args) {
     int max = 0;
     int maxAlpha = -1;
     int maxBeta = -1;
@@ -20,6 +23,9 @@ public class LinearCryptanalysis {
         System.out.print("\t" + i);
       }
       System.out.println();
+      
+      // Reset the max initial value for each SBox
+      max = 0;
       
       Util.increment(alpha, 6);
       for (int i = 1; i < 64; i++) {
@@ -41,15 +47,19 @@ public class LinearCryptanalysis {
         System.out.println();        
       }
       System.out.println();
+      
+      System.out.println("Max |NS| for SBox " +  (sbox + 1) + " is " + max + " with alpha " + 
+    	        maxAlpha + " and beta " + maxBeta);
       System.out.println();
+      System.out.println();
+      
     }    
-    System.out.println("Max |NS| is " + max + " with alpha " + 
-        maxAlpha + " and beta " + maxBeta);    
+        
   }
   
   
   /**
-   * Defines the NS function as in Matsui "Linear Cryptanalysis Method for DES Cypher"
+   * Defines the NS function as in Matsui "Linear Cryptanalysis Method for DES cipher"
    * @param sbox identifies the S-Box (1 to 8)
    * @param alpha repesents a value between 0 and 63 selecting bits of the input to be
    *  xor-ed 
