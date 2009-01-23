@@ -7,11 +7,11 @@ import java.util.Random;
 public class SpnLinearCryptanalysis {
   
   /**
-   * Generate random plain/cyphertext pairs via the SPN cypher with the given
+   * Generate random plain/ciphertext pairs via the SPN cipher with the given
    * round keys
    * @param pairs Number of pairs to generate
-   * @param roundKeys Round keys to use for the SPN cypher
-   * @return List of plain/cypher sets (each set is 16 bits long)
+   * @param roundKeys Round keys to use for the SPN cipher
+   * @return List of plain/cipher sets (each set is 16 bits long)
    */
   public List<BitSet[]> generateRandomPairs(int pairs, BitSet[] roundKeys) {
     Random r = new Random();
@@ -26,8 +26,8 @@ public class SpnLinearCryptanalysis {
   }
   
   /**
-   * Backtrack across one s-box with a partial cyphertext and partial subkey guess
-   * @param partialc 4 bit partial of the cyphertext
+   * Backtrack across one s-box with a partial ciphertext and partial subkey guess
+   * @param partialc 4 bit partial of the ciphertext
    * @param partialk 4 bit partial of the subkey
    * @return
    */
@@ -40,7 +40,7 @@ public class SpnLinearCryptanalysis {
   }
   
   /**
-   * Mount the linear cryptanalysis attack on the SPN cypher to recover 8 bits
+   * Mount the linear cryptanalysis attack on the SPN cipher to recover 8 bits
    * of the final round key
    */
   public static void main(String[] args) {
@@ -90,12 +90,12 @@ public class SpnLinearCryptanalysis {
          int guessKey = Util.toInteger(guessKeySet, 8);         
          
          // Backtrack to find U-bits 4 to 8
-         BitSet partialCypherA = c.get(4, 8);
-         BitSet UA = slc.backtrackPartialSubkeyGuess(partialCypherA, partialSubkeyA);
+         BitSet partialCipherA = c.get(4, 8);
+         BitSet UA = slc.backtrackPartialSubkeyGuess(partialCipherA, partialSubkeyA);
          
          // Backtrack to find U-bits 12-16
-         BitSet partialCypherB = c.get(12, 16);
-         BitSet UB = slc.backtrackPartialSubkeyGuess(partialCypherB, partialSubkeyB);
+         BitSet partialCipherB = c.get(12, 16);
+         BitSet UB = slc.backtrackPartialSubkeyGuess(partialCipherB, partialSubkeyB);
          
          // 4 - compute the linear/affine expression
          //  U_4,6 + U_4,8 + U_4,14 + U_4,16 + P_5 + P_7 + P_8 = 0

@@ -86,7 +86,7 @@ public class SpnImpl {
    * round keys
    * @param p 16-bit plaintext block
    * @param roundKeys 5 16-bit round keys
-   * @return the resulting cyphertext
+   * @return the resulting ciphertext
    */
   public BitSet SpnEncBlock(BitSet p, BitSet[] roundKeys) {
     p = Util.copyBitSet(p, 16);
@@ -103,9 +103,9 @@ public class SpnImpl {
   }
   
   /**
-   * Decrypt a block c with the SPN cyphwer
-   * @param c 16-bit cyphertext block
-   * @param roundKeys 5 16-bit round keyd
+   * Decrypt a block c with the SPN cipher
+   * @param c 16-bit ciphertext block
+   * @param roundKeys 5 16-bit round keys
    * @return the resulting plaintext
    */
   public BitSet SpnDecBlock(BitSet c, BitSet[] roundKeys) {
