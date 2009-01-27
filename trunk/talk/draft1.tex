@@ -1,0 +1,325 @@
+\documentclass[9pt]{beamer}
+
+\usepackage{amsmath,amssymb,amstext,amsfonts,setspace,dsfont,amsmath,amsthm,array,nomencl,hyperref,pgf,xcolor}
+
+\usepackage{beamerthemesplit}
+
+%\usetheme{Dresden}
+\usetheme{Ilmenau}
+
+\setbeamertemplate{navigation symbols}{} %no navigation symbols
+
+\setbeamertemplate{footline}
+{%
+\leavevmode%
+\hbox{%
+
+\begin{beamercolorbox}[wd=.3\paperwidth,ht=2.5ex,dp=1.125ex,left]{author
+in head/foot}%
+\usebeamerfont{author in head/foot}\hspace{.3cm}\insertshortauthor\hspace{.3cm}
+\end{beamercolorbox}%
+
+\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,center]{title
+in head/foot}%
+\usebeamerfont{title in head/foot}\hspace{.3cm}\insertshorttitle
+\end{beamercolorbox}%
+
+\begin{beamercolorbox}[wd=.2\paperwidth,ht=2.5ex,dp=1.125ex,right]{author
+in head/foot}%
+\usebeamerfont{author in head/foot}Slide\hspace{.1cm}\insertframenumber\hspace{.1cm}of\hspace{.1cm}\inserttotalframenumber\hspace{.3cm}
+\end{beamercolorbox}%
+}%
+\vskip0pt%
+}
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
+\title{Linear and Differential Cryptanalysis of DES}
+\author{Slava Chernyak and Sourav Sen Gupta}
+\institute{University of Washington}
+\date{February 2, 2009}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{Introduction}
+\begin{block}{Quack!}
+Introduction to DES and the two attacks
+\end{block}
+\end{frame}
+
+\subsection{Data Encrytption Standard}
+\begin{frame}
+DES structure
+
+\end{frame}
+
+\begin{frame}
+DES pieces
+
+\end{frame}
+
+\begin{frame}
+DES mathematics
+
+\end{frame}
+
+\subsection{Linear Cryptanalysis}
+\begin{frame}
+Vulnerabilities of DES
+
+\end{frame}
+
+\begin{frame}
+How to exploit those - Linear attack idea
+
+\end{frame}
+
+
+\subsection{Differential Cryptanalysis}
+\begin{frame}
+Vulnerabilities of DES
+
+\end{frame}
+
+\begin{frame}
+How to exploit those - Differential attack idea
+
+\end{frame}
+
+\section{Mathematical Framework}
+\begin{frame}
+Mathematical description of the attacks
+
+\end{frame}
+
+\subsection{Simplification WLOG}
+\begin{frame}
+Reducing DES down to SPN
+
+\end{frame}
+
+\begin{frame}
+Introducing SPN mathematically
+
+\end{frame}
+
+\subsection{Linear Attack on SPN}
+\begin{frame}
+Basic math concepts behind Linear attack ...
+
+\end{frame}
+
+\begin{frame}
+Intro to linear / affine approximation ... 
+
+\end{frame}
+
+\begin{frame}
+Linear characteristic / approximation of SBox ...
+
+\end{frame}
+
+\begin{frame}
+Probabilities for the approximations ...
+
+\end{frame}
+
+\begin{frame}
+Piling Up lemma ...
+
+\end{frame}
+
+\begin{frame}
+Combining across SPN rounds ... 
+
+\end{frame}
+
+\begin{frame}
+The algorithm for the attack ... 
+
+\end{frame}
+
+\begin{frame}
+Probabilistic justification ...
+
+\end{frame}
+
+\subsection{Differential Attack on SPN}
+\begin{frame}
+Basic math concepts behind Differential attack ...
+
+\end{frame}
+
+\begin{frame}
+Intro to differentials ... 
+
+\end{frame}
+
+\begin{frame}
+Differential characteristic / approximation of SBox ...
+
+\end{frame}
+
+\begin{frame}
+Probabilities for the approximations ...
+
+\end{frame}
+
+\begin{frame}
+Analogue of Piling Up lemma ...
+
+\end{frame}
+
+\begin{frame}
+Combining across SPN rounds ... 
+
+\end{frame}
+
+\begin{frame}
+The algorithm for the attack ... 
+
+\end{frame}
+
+\begin{frame}
+Probabilistic justification ...
+
+\end{frame}
+
+\subsection{Actual Attacks}
+\begin{frame}
+Demo of attacks on SPN ... Runtime comparisons with Brute Force ...
+
+\end{frame}
+
+\begin{frame}
+Break ... After coming back from the break, we should refresh the basic ideas behind the attacks once again ...
+
+\end{frame}
+
+
+\section{Attacks on DES}
+\begin{frame}
+Back to DES ... Pull back from SPN ...
+
+\end{frame}
+
+\subsection{Linear Attack: 3-round DES}
+\begin{frame}
+Linear Attack idea ... 
+
+\end{frame}
+
+\begin{frame}
+Matsui NS for SBoxes ...
+
+\end{frame}
+
+\begin{frame}
+Linear approximations for SBoxes ...
+
+\end{frame}
+
+\begin{frame}
+Piling up over 3 rounds ...
+
+\end{frame}
+
+\begin{frame}
+Demo of the attack ...
+
+\end{frame}
+
+\subsection{Differential Attack: 3-round DES}
+\begin{frame}
+Differential Attack idea ... 
+
+\end{frame}
+
+\begin{frame}
+Differentials for SBoxes ...
+
+\end{frame}
+
+\begin{frame}
+Differential characteristics for SBoxes ...
+
+\end{frame}
+
+\begin{frame}
+Piling up over 3 rounds ...
+
+\end{frame}
+
+\begin{frame}
+Demo of the attack ...
+
+\end{frame}
+
+\subsection{Extension to full DES}
+\begin{frame}
+Extension of the same ideas to 6 / 8 / 16 round DES ... Probabilistic explanation ...
+
+\end{frame}
+
+
+\section{Conclusion}
+\begin{frame}
+Concluding remarks about the project ...
+
+\end{frame}
+
+\subsection{Independence of S-Boxes}
+\begin{frame}
+Refresh math idea ... Independence assumption ... 
+
+\end{frame}
+
+\begin{frame}
+What if that is false ? ... Discussion ...
+
+\end{frame}
+
+\subsection{Number of Pairs Required}
+\begin{frame}
+Probabilistic possibility of the attacks ... Pairs of data points needed ... 
+
+\end{frame}
+
+\begin{frame}
+Generalized attack idea on any given system ... Discussion ...
+
+\end{frame}
+
+\subsection{Links between the Attacks}
+\begin{frame}
+Links between Linear and Differential Attacks ... 
+
+\end{frame}
+
+\begin{frame}
+Mathematically and while implementing ...
+
+\end{frame}
+
+\subsection{Take home Lesson}
+\begin{frame}
+If you are mounting the attacks ... To Do / Not To Do ...
+
+\end{frame}
+
+\begin{frame}
+If you are building a cryptosystem ... To Do / Not To Do ...
+
+\end{frame}
+
+\begin{frame}
+Questions ... Doubts ... Coding ... Misc ... Discussion ...
+
+\end{frame}
+
+\end{document}
