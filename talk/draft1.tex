@@ -132,13 +132,32 @@ SPN Visually
 \end{frame}
 
 \begin{frame}
-Introducing SPN mathematically
+SPN S-Box and Permutation:\\
+\vspace{5mm}
+SPN uses a single 4-bit S-Box that has the following structure:
+\begin{tabular}{|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|}
+\hline
+Input: & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F \\
+\hline
+Output:& E & 4 & D & 1 & 2 & F & B & 8 & 3 & A & 6 & C & 5 & 9 & 0 & 7 \\
+\hline
+\end{tabular}\\
+\vspace{5mm}
+And the following 16-bit permutation:
+\begin{tabular}{|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|}
+\hline
+1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16\\
+\hline
+1 & 5 & 9 & 13 & 2 & 6 & 10 & 14 & 3 & 7 & 11 & 15 & 4 & 8 & 12 & 16 \\
+\hline
+\end{tabular}
+\vspace{5mm}
 
 \end{frame}
 
 \subsection{Linear Attack on SPN}
 \begin{frame}
-\large{Basic math concepts behind the Linear attack:}\\
+\large{Basic Definitions for the Linear attack:}\\
 \vspace{5 mm}
 Linear cryptanalysis tries to take advantage of high probability occurrences of  linear expressions involving plaintext bits, ciphertext bits and subkey bits.  It is a known plaintext attack.\\
 \vspace{5 mm}
@@ -149,17 +168,77 @@ Define $V_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th o
 \end{frame}
 
 \begin{frame}
-Intro to linear / affine approximation ... 
-
+Linear and Affine approximation of S-Box:\\
+\vspace{5mm}
+How do we come up with the desired expression for the entire cipher? We start by looking at the only non-linear component, the S-Box.\\
+\vspace{5mm}
+To find the linear/afine approximation of the S-Box we simply consider every possible expression of the input bits $X_i$ and output bits $Y_j$. Thus the expression has the form
+\[ \bigoplus_{i \in U} X_i = \bigoplus_{j \in V} Y_j \]
+Where $U$ and $V$ range over all possible subsets of $\{1, 2, 3 ,4\}$. We then compare how often this expression coincides with the S-Box. \\
+\vspace{5mm}
+Note that there are 16 possibilities for $U$ and $V$, hence 256 total possible expressions. (this is for a 4-bit S-box)
 \end{frame}
 
 \begin{frame}
-Linear characteristic / approximation of SBox ...
-
+S-Box approximatin example:\\
+\vspace{5mm}
+We can take the following expression as an example:
+\[ X_2 \oplus X_3 = Y_1 \oplus Y_3 \oplus Y_4 \]
+Applying all possible values for the input $X$ bits it turns out that the expression holds in 12 out of the 16 cases. Hence, this expression has a bias of $12/16 - 1/2 = 1/4$.\\
+\vspace{5mm}
+Similarly the following expression
+\[ X_3 \oplus X_4 = Y_1 \oplus Y_4 \]
+Has a bias of $-3/8$, which is higher in magnitude than the previous one. It is the magnitude of the bias that is important.
 \end{frame}
 
 \begin{frame}
-Probabilities for the approximations ...
+The number of agreements (minus 8) between the S-Box and every possible expression is summarized in the table below. Thus to get the bias, one must only divide by 16.\\
+\vspace{5mm}
+\tiny
+\begin{tabular}{|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|}
+\hline
+ &0&1&2&3&4&5&6&7&8&9&A&B&C&D&E&F\\
+\hline
+0&+8&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0 \\
+\hline
+1&0&0&-2&-2&0&0&-2&\textbf{+6}&+2&+2&0&0&+2&+2&0&0 \\
+\hline
+2&0&0&-2&-2&0&0&-2&-2&0&0&+2&+2&0&0&\textbf{-6}&+2 \\
+\hline
+3&0&0&0&0&0&0&0&0&+2&\textbf{-6}&-2&-2&+2&+2&-2&-2 \\
+\hline
+4&0&+2&0&-2&-2&-4&-2&0&0&-2&0&+2&+2&-4&+2&0 \\
+\hline
+5&0&-2&-2&0&-2&0&+4&+2&-2&0&-4&+2&0&-2&-2&0  \\
+\hline
+6&0&+2&-2&+4&+2&0&0&+2&0&-2&+2&+4&-2&0&0&-2 \\
+\hline
+7&0&-2&0&+2&+2&-4&+2&0&-2&0&+2&0&+4&+2&0&+2  \\
+\hline
+8&0&0&0&0&0&0&0&0&-2&+2&+2&-2&+2&-2&-2&\textbf{-6} \\
+\hline
+9&0&0&-2&-2&0&0&-2&-2&-4&0&-2&+2&0&+4&+2&-2 \\
+\hline
+A&0&+4&-2&+2&-4&0&+2&-2&+2&+2&0&0&+2&+2&0&0 \\
+\hline
+B&0&+4&0&-4&+4&0&+4&0&0&0&0&0&0&0&0&0 \\
+\hline
+C&0&-2&+4&-2&-2&0&+2&0&+2&0&+2&+4&0&+2&0&-2 \\ 
+\hline
+D&0&+2&+2&0&-2&+4&0&+2&-4&-2&+2&0&+2&0&0&+2 \\
+\hline
+E&0&+2&+2&0&-2&-4&0&+2&-2&0&0&-2&-4&+2&-2&0 \\
+\hline
+F&0&-2&-4&-2&-2&0&+2&0&0&-2&+4&-2&-2&0&+2&0 \\
+\hline
+\end{tabular}
+\small
+\end{frame}
+
+\begin{frame}
+What this means for 1 Round:\\
+\vspace{5mm}
+Note, from the previous table, that the expression $X_3 \oplus X_4 = Y_1 \oplus Y_4$ has a bias of $-3/8$
 
 \end{frame}
 
