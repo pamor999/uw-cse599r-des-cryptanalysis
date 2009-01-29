@@ -46,32 +46,98 @@ in head/foot}%
 \end{frame}
 
 \section{Introduction}
-\begin{frame}{Introduction}
-\begin{block}{Quack!}
-Introduction to DES and the two attacks
-\end{block}
+
+\begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+A quick review of DES
+\end{beamercolorbox}
 \end{frame}
 
 \subsection{Data Encrytption Standard}
 \begin{frame}
-DES structure
+\begin{columns}
+\begin{column}{0.6\textwidth}
+\begin{block}{DES Function}
+\[ DES : (\mbox{Plaintext }(P), \mbox{ Key }(K))  \mapsto \mbox{Cipher }(C) \]
+\end{block}
 
+\begin{block}{DES Unit Blocks}
+\begin{align*}
+\sigma_{i+1} : \: & (0,1)^{64} \rightarrow (0,1)^{64} \\
+& (L_i, R_i) \mapsto (L_i \oplus f(R_i,K_{i+1}), R_i) \\
+\tau : \: & (0,1)^{64} \rightarrow (0,1)^{64} \\
+& (L_{i+1},R_{i+1}) \mapsto (R_{i+1},L_{i+1})
+\end{align*}
+\end{block}
+
+\begin{itemize}
+\item{Input for round $i+1$: $(L_i,R_i)$}
+\item{Subkey for round $i+1$: $K_{i+1}$}
+\item{Feistel function ($f$)}
+\item{16-rounds for $i = 0, 1, ..., 15$}
+\end{itemize}
+
+\end{column}
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.8\textheight]{des_algo.jpg}
+\caption{DES Algorithm}
+\end{figure}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-DES pieces
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{block}{Feistel Function}
+\begin{align*}
+f : \: & (0,1)^{32} \times (0,1)^{48} \rightarrow (0,1)^{32} \\
+& (R,K)  \mapsto P (S_{Box}(E(R) \oplus K)) 
+\end{align*}
+\end{block}
 
+\begin{itemize}
+\item{Right half of the plaintext ($R$)}
+\item{Expansion function \\ $E : (0,1)^{32} \rightarrow (0,1)^{48}$}
+\item{Key for the round ($K$)}
+\item{Confusion function (S-Boxes) \\ $S_i: (0,1)^6 \rightarrow (0,1)^4$}
+\item{Diffusion function \\ $P : (0,1)^{32} \rightarrow (0,1)^{32}$}
+\end{itemize}
+\end{column}
+\begin{column}{0.55\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.6\textheight]{des_feistel.jpg}
+\caption{Feistel Round for DES}
+\end{figure}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-DES mathematics
+Mathematically, the different pieces of DES are:
+\begin{itemize}
+\item{Initial Permutation $IP : (0,1)^{64} \rightarrow (0,1)^{64}$}
+\item{DES Unit Block functions $\sigma_{i+1} (L_i,R_i)$ for $i = 0,1,...,15$}
+\item{Transpositions $\tau : (L_{i+1},R_{i+1}) \mapsto (R_{i+1},L_{i+1})$ for $i = 0,1,...,14$}
+\item{Inverse Initial Permutation $IP^{-1} : (0,1)^{64} \rightarrow (0,1)^{64}$}
+\end{itemize}
 
+\begin{block}{Algebraic Representation of DES}
+\begin{align*}
+C &= DES_K (P) = IP^{-1} \sigma_{16} \tau \cdots \tau \sigma_1 IP (P) \\
+P &= DES^{-1}_K (C) = IP^{-1} \sigma_{1} \tau \cdots \tau \sigma_{16} IP (C)
+\end{align*}
+\end{block}
+
+Note: The inverse DES comes from the fact that $\tau^2 = \sigma_i^2 = 1$
 \end{frame}
 
 \subsection{Linear Cryptanalysis}
 \begin{frame}
-Vulnerabilities of DES
-
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Basic Idea of Linear Cryptanalysis
+\end{beamercolorbox}
 \end{frame}
 
 \begin{frame}
@@ -93,8 +159,9 @@ Consider: No such obvious expression should exist, otherwise the cipher is trivi
 
 \subsection{Differential Cryptanalysis}
 \begin{frame}
-Vulnerabilities of DES
-
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Basic Idea of Differential Cryptanalysis
+\end{beamercolorbox}
 \end{frame}
 
 \begin{frame}
@@ -104,62 +171,84 @@ How to exploit those - Differential attack idea
 
 \section{Mathematical Framework}
 \begin{frame}
-Mathematical description of the attacks
-
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Dive into the Mathematics
+\end{beamercolorbox}
 \end{frame}
 
 \subsection{Simplification WLOG}
-\begin{frame}
-Reducing DES down to SPN
 
+\begin{frame}
+\begin{columns}
+\begin{column}{0.6\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.55\textheight]{des_feistel.jpg}
+\end{figure}
+Let us simplify DES by
+\begin{itemize}
+\item{Reducing the bitlength from $64$ to $16$}
+\item{Removing expansion function $E(R)$}
+\item{Taking identical S-Boxes of size $4$ bits}
+\item{Repeating over less rounds}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.9\textheight]{spn.jpg}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Simple Substitution-Permutation Network
+\end{beamercolorbox}
+\end{frame}
+
+\begin{frame}
 We can remove much of the complexity of DES without affecting the discussion of the techniques of Linear Cryptanalysis. We define a simple Substitution-Permutation Network Cipher (SPN) which has structural similarity to DES.
 
 \begin{itemize}
 \item SPN is a 16-bit block cipher (16-bit plaintext to 16-bit ciphertext) with 16-bit round keys.
 \item Each round consists of a substitution and a permutation (much like in DES)
-\item The substitution is the result of splitting the 16-bit input block to a round in to 4 4-bit sub-blocks. Each 4-bit sub-block is then mapped across a 4-bit to 4-bit S-box. We use the same S-box throughout. 
+\item The substitution is the result of splitting the 16-bit input block to a round in to 4 4-bit sub-blocks. Each 4-bit sub-block is then mapped across a 4-bit to 4-bit S-box. We use the same S-box throughout.
 \item The permutation is applied to all 16-bits of the round following the substitution.
 \item Finally, key-mixing is achieved by XOR-ing the round key with every input block to a round as well as at the end of the last round (so that we can't simply ignore the last round)
 \item The SPN cipher we will look at will consist of 4 rounds.
 \end{itemize}
-
-
-\end{frame}
-
-\begin{frame}
-SPN Visually
-%\pgfimage[scale=0.75]{SPN.PNG}
 \end{frame}
 
 \begin{frame}
 SPN S-Box and Permutation:\\
 \vspace{5mm}
 SPN uses a single 4-bit S-Box that has the following structure:
-\begin{tabular}{|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|}
-\hline
-Input: & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F \\
-\hline
-Output:& E & 4 & D & 1 & 2 & F & B & 8 & 3 & A & 6 & C & 5 & 9 & 0 & 7 \\
-\hline
-\end{tabular}\\
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{spn_sbox.jpg}
+\end{figure}
+
 \vspace{5mm}
 And the following 16-bit permutation:
-\begin{tabular}{|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|}
-\hline
-1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16\\
-\hline
-1 & 5 & 9 & 13 & 2 & 6 & 10 & 14 & 3 & 7 & 11 & 15 & 4 & 8 & 12 & 16 \\
-\hline
-\end{tabular}
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{spn_perm.jpg}
+\end{figure}
+
 \vspace{5mm}
 
 \end{frame}
 
 \subsection{Linear Attack on SPN}
 \begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Mathematics of Linear Cryptanalysis
+\end{beamercolorbox}
+\end{frame}
+
+\begin{frame}
 \large{Basic Definitions for the Linear attack:}\\
 \vspace{5 mm}
-Linear cryptanalysis tries to take advantage of high probability occurrences of  linear expressions involving plaintext bits, ciphertext bits and subkey bits.  It is a known plaintext attack.\\
+Linear cryptanalysis tries to take advantage of high probability occurrences of linear expressions involving plaintext bits, ciphertext bits and subkey bits. It is a known plaintext attack.\\
 \vspace{5 mm}
 Define $P_i$ where $i = 1, 2, \dots 16$ as the $i$-th plaintext bit.\\
 Define $C_i$ where $i = 1, 2, \dots 16$ as the $i$-th cyphertext bit.\\
@@ -194,46 +283,11 @@ Has a bias of $-3/8$, which is higher in magnitude than the previous one. It is 
 \begin{frame}
 The number of agreements (minus 8) between the S-Box and every possible expression is summarized in the table below. Thus to get the bias, one must only divide by 16.\\
 \vspace{5mm}
-\tiny
-\begin{tabular}{|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|}
-\hline
- &0&1&2&3&4&5&6&7&8&9&A&B&C&D&E&F\\
-\hline
-0&+8&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0 \\
-\hline
-1&0&0&-2&-2&0&0&-2&\textbf{+6}&+2&+2&0&0&+2&+2&0&0 \\
-\hline
-2&0&0&-2&-2&0&0&-2&-2&0&0&+2&+2&0&0&\textbf{-6}&+2 \\
-\hline
-3&0&0&0&0&0&0&0&0&+2&\textbf{-6}&-2&-2&+2&+2&-2&-2 \\
-\hline
-4&0&+2&0&-2&-2&-4&-2&0&0&-2&0&+2&+2&-4&+2&0 \\
-\hline
-5&0&-2&-2&0&-2&0&+4&+2&-2&0&-4&+2&0&-2&-2&0  \\
-\hline
-6&0&+2&-2&+4&+2&0&0&+2&0&-2&+2&+4&-2&0&0&-2 \\
-\hline
-7&0&-2&0&+2&+2&-4&+2&0&-2&0&+2&0&+4&+2&0&+2  \\
-\hline
-8&0&0&0&0&0&0&0&0&-2&+2&+2&-2&+2&-2&-2&\textbf{-6} \\
-\hline
-9&0&0&-2&-2&0&0&-2&-2&-4&0&-2&+2&0&+4&+2&-2 \\
-\hline
-A&0&+4&-2&+2&-4&0&+2&-2&+2&+2&0&0&+2&+2&0&0 \\
-\hline
-B&0&+4&0&-4&+4&0&+4&0&0&0&0&0&0&0&0&0 \\
-\hline
-C&0&-2&+4&-2&-2&0&+2&0&+2&0&+2&+4&0&+2&0&-2 \\ 
-\hline
-D&0&+2&+2&0&-2&+4&0&+2&-4&-2&+2&0&+2&0&0&+2 \\
-\hline
-E&0&+2&+2&0&-2&-4&0&+2&-2&0&0&-2&-4&+2&-2&0 \\
-\hline
-F&0&-2&-4&-2&-2&0&+2&0&0&-2&+4&-2&-2&0&+2&0 \\
-\hline
-\end{tabular}
-\small
+\begin{figure}
+\includegraphics[height=0.7\textheight]{spn_linear_approx.jpg}
+\end{figure}
 \end{frame}
+
 
 \begin{frame}
 What this means for 1 Round:\\
@@ -304,7 +358,7 @@ Combining across SPN rounds ...
 \end{frame}
 
 \begin{frame}
-The algorithm for the attack ... 
+The algorithm for the attack ...
 
 \end{frame}
 
@@ -315,12 +369,18 @@ Probabilistic justification ...
 
 \subsection{Differential Attack on SPN}
 \begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Mathematics of Differential Cryptanalysis
+\end{beamercolorbox}
+\end{frame}
+
+\begin{frame}
 Basic math concepts behind Differential attack ...
 
 \end{frame}
 
 \begin{frame}
-Intro to differentials ... 
+Intro to differentials ...
 
 \end{frame}
 
@@ -340,12 +400,12 @@ Analogue of Piling Up lemma ...
 \end{frame}
 
 \begin{frame}
-Combining across SPN rounds ... 
+Combining across SPN rounds ...
 
 \end{frame}
 
 \begin{frame}
-The algorithm for the attack ... 
+The algorithm for the attack ...
 
 \end{frame}
 
@@ -356,25 +416,33 @@ Probabilistic justification ...
 
 \subsection{Actual Attacks}
 \begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Let's get our hands dirty!
+\end{beamercolorbox}
+\end{frame}
+
+\begin{frame}
 Demo of attacks on SPN ... Runtime comparisons with Brute Force ...
 
 \end{frame}
 
 \begin{frame}
-Break ... After coming back from the break, we should refresh the basic ideas behind the attacks once again ...
-
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+It's time for a Break!
+\end{beamercolorbox}
 \end{frame}
 
 
 \section{Attacks on DES}
 \begin{frame}
-Back to DES ... Pull back from SPN ...
-
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Do these work for DES?
+\end{beamercolorbox}
 \end{frame}
 
 \subsection{Linear Attack: 3-round DES}
 \begin{frame}
-Linear Attack idea ... 
+Linear Attack idea ...
 
 \end{frame}
 
@@ -400,7 +468,7 @@ Demo of the attack ...
 
 \subsection{Differential Attack: 3-round DES}
 \begin{frame}
-Differential Attack idea ... 
+Differential Attack idea ...
 
 \end{frame}
 
@@ -433,13 +501,14 @@ Extension of the same ideas to 6 / 8 / 16 round DES ... Probabilistic explanatio
 
 \section{Conclusion}
 \begin{frame}
-Concluding remarks about the project ...
-
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Did we miss anything important?
+\end{beamercolorbox}
 \end{frame}
 
 \subsection{Independence of S-Boxes}
 \begin{frame}
-Refresh math idea ... Independence assumption ... 
+Refresh math idea ... Independence assumption ...
 
 \end{frame}
 
@@ -450,7 +519,7 @@ What if that is false ? ... Discussion ...
 
 \subsection{Number of Pairs Required}
 \begin{frame}
-Probabilistic possibility of the attacks ... Pairs of data points needed ... 
+Probabilistic possibility of the attacks ... Pairs of data points needed ...
 
 \end{frame}
 
@@ -461,7 +530,7 @@ Generalized attack idea on any given system ... Discussion ...
 
 \subsection{Links between the Attacks}
 \begin{frame}
-Links between Linear and Differential Attacks ... 
+Links between Linear and Differential Attacks ...
 
 \end{frame}
 
@@ -470,7 +539,13 @@ Mathematically and while implementing ...
 
 \end{frame}
 
-\subsection{Take home Lesson}
+\subsection{Take Home}
+\begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+`Take Home'
+\end{beamercolorbox}
+\end{frame}
+
 \begin{frame}
 If you are mounting the attacks ... To Do / Not To Do ...
 
@@ -485,5 +560,6 @@ If you are building a cryptosystem ... To Do / Not To Do ...
 Questions ... Doubts ... Coding ... Misc ... Discussion ...
 
 \end{frame}
+
 
 \end{document}
