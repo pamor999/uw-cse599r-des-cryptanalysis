@@ -238,13 +238,64 @@ F&0&-2&-4&-2&-2&0&+2&0&0&-2&+4&-2&-2&0&+2&0 \\
 \begin{frame}
 What this means for 1 Round:\\
 \vspace{5mm}
-Note, from the previous table, that the expression $X_3 \oplus X_4 = Y_1 \oplus Y_4$ has a bias of $-3/8$
-
+Note, from the previous table, that the expression $X_1 \oplus X_3 \oplus X_4 = Y_2$ has a bias of $+1/4$. \\
+\vspace{5mm}
+Note also that $U_1 = P \oplus K_1$. 
+\vspace{5mm} We can now write down the following linear approximation across the 1st round of SPN:
+\begin{eqnarray*}
+V_{1,6} & = & U_{1,5} \oplus U_{1,7} \oplus U_{1,8} \mbox{  $\leftarrow$ S-Box approximation above}\\
+		  & = & (P_5\oplus K_{1,5}) \oplus (P_7\oplus K_{1,7}) \oplus (P_8\oplus K_{1,8})
+\end{eqnarray*}
+This expression holds with probability of $3/4$ (bias of $+1/4$)
 \end{frame}
 
 \begin{frame}
-Piling Up lemma ...
+We can get expressions that hold with some non-$1/2$ probability for every round. But we must somehow combine them to write an expression relating the plaintext and ciphertext bits $\Rightarrow$ We use the Piling Up Principle:\\
+\vspace{5mm}
+Note: \\
+$X_1 \oplus X_2 = 0$ is a linear expression equivalent to $X_1 = X_2$\\
+$X_1 \oplus X_2 = 1$ is an affine expression equivalent to $X_1 \neq X_2$\\
+\vspace{5mm}
+Assume the following probability distribution
+\[ Pr(X_1 = i)  = \left\{ \begin{array}{ll}
+         p_1 & \mbox{$i = 0$};\\
+         (1 - p_1) & \mbox{$i = 1$}.\end{array} \right. \] 
+\[ Pr(X_2 = i)  = \left\{ \begin{array}{ll}
+         p_2 & \mbox{$i = 0$};\\
+         (1 - p_2) & \mbox{$i = 1$}.\end{array} \right. \] 
+\end{frame}
 
+\begin{frame}
+Piling Up Principle Continued:\\
+\vspace{5mm}
+Assuming that $X_1$ and $X_2$ are independant:
+\[ Pr(X_1 = i, X_2 = j)  = \left\{ \begin{array}{ll}
+         p_1 p_2 & \mbox{$i = 0, j = 0$};\\
+         (1 - p_1) p_2 & \mbox{$i = 1, j = 0$} \\
+			p_1 (1 - p_2) & \mbox{$i = 0, j = 1$} \\
+			(1 - p_1)(1 - p_2) & \mbox{$i = 1, j = 1$}.\end{array} \right. \] 
+Now, note that $X_1 \oplus X_2 = 0 \Rightarrow X_1 = 1, X_2 =1$ OR $X_1 = 0, X_2 = 0$. Hence:
+\begin{eqnarray*}
+ Pr(X_1 \oplus X_2 = 0) & = & Pr(X_1=0,X_2=0) + Pr(X_1=1,X_2=1) \\
+								& = & p_1p_2 + (1 - p_1)(1-p_2)
+\end{eqnarray*}
+If we write $p_k = 1/2 + \epsilon_k$ we have
+\[ Pr(X_1 \oplus X_2 = 0) = 1/2 + 2\epsilon_1 \epsilon_2 \]
+Hence the bias of $X_1 \oplus X_2 = 0$ is 
+\[ 2 \epsilon_1 \epsilon_2 \]
+That is, twice the product of the bias of the original expressions.
+\end{frame}
+
+\begin{frame}
+Piling Up Principle Continued - The Piling Up Lemma:\\
+\vspace{5mm}
+We extend the idea on the previous slide to the general case: For $n$ independant random binary variables, $X_1, X_2, \dots, X_n$, 
+\[ Pr(X_1 \oplus X_2 \cdots \oplus X_n = 0) = 1/2 + 2^{n-1} \prod_{i=1}^n \epsilon_i \]
+In terms of bias,
+\[ \epsilon_{1,2,\dots,n} = 2^{n-1} \prod_{i = 1}^n \epsilon_i \]
+Where $\epsilon_{1,2,\dots,n}$ is the total bias of $X_1 \oplus X_2 \cdots \oplus X_n = 0$. \\
+\vspace{5mm}
+Note that if some $\epsilon_k = 0$ (that is, some $X_k$ has no bias) then the total bias will be $0$.  
 \end{frame}
 
 \begin{frame}
