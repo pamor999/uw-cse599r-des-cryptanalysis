@@ -75,8 +75,19 @@ Vulnerabilities of DES
 \end{frame}
 
 \begin{frame}
-How to exploit those - Linear attack idea
+Linear Attack on DES idea:\\
+\begin{itemize}
+\item S-Boxes depend on a relatively small number of bits (6) which allows us to write down linear (or afine) expressions that approximate S-Boxes \\
+\item The effects of one round do not diffuse quickly over following rounds. Thus linear expresions (as above) that hold per-round can be combined across rounds.
+\end{itemize}
+\end{frame}
 
+\begin{frame}
+Specifically, if $P_{i}$ are plaintext bits, $C_{i}$ are cyphertext bits, and $K_{i}$ are subkey bits, then we wish to find an expression of the form
+\[ P_{i_1} \oplus P_{i_2} \cdots P_{i_j} \oplus C_{i_1} \oplus C_{i_2} \cdots C_{i_k} = K_{i_1} \oplus K_{i_2} \oplus K_{i_m} \]
+Such that this expression has a high \textit{or} low probability of occurence.\\
+\vspace{5mm}
+Consider: No such obvious expression should exist, otherwise the cipher is trivially weak. If we were to randomly select bits for the above expression, it would hold exactly $1/2$ the time. If we find an expression such as above that displays a high \textit{bias}, that is, it holds much more or less freqently than $1/2$ the time, we can exploit this.
 \end{frame}
 
 
@@ -101,6 +112,23 @@ Mathematical description of the attacks
 \begin{frame}
 Reducing DES down to SPN
 
+We can remove much of the complexity of DES without affecting the discussion of the techniques of Linear Cryptanalysis. We define a simple Substitution-Permutation Network Cipher (SPN) which has structural similarity to DES.
+
+\begin{itemize}
+\item SPN is a 16-bit block cipher (16-bit plaintext to 16-bit ciphertext) with 16-bit round keys.
+\item Each round consists of a substitution and a permutation (much like in DES)
+\item The substitution is the result of splitting the 16-bit input block to a round in to 4 4-bit sub-blocks. Each 4-bit sub-block is then mapped across a 4-bit to 4-bit S-box. We use the same S-box throughout. 
+\item The permutation is applied to all 16-bits of the round following the substitution.
+\item Finally, key-mixing is achieved by XOR-ing the round key with every input block to a round as well as at the end of the last round (so that we can't simply ignore the last round)
+\item The SPN cipher we will look at will consist of 4 rounds.
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+SPN Visually
+%\pgfimage[scale=0.75]{SPN.PNG}
 \end{frame}
 
 \begin{frame}
@@ -110,8 +138,14 @@ Introducing SPN mathematically
 
 \subsection{Linear Attack on SPN}
 \begin{frame}
-Basic math concepts behind Linear attack ...
-
+\large{Basic math concepts behind the Linear attack:}\\
+\vspace{5 mm}
+Linear cryptanalysis tries to take advantage of high probability occurrences of  linear expressions involving plaintext bits, ciphertext bits and subkey bits.  It is a known plaintext attack.\\
+\vspace{5 mm}
+Define $P_i$ where $i = 1, 2, \dots 16$ as the $i$-th plaintext bit.\\
+Define $C_i$ where $i = 1, 2, \dots 16$ as the $i$-th cyphertext bit.\\
+Define $U_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th input bit to the $j$-th round of SPN.\\
+Define $V_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th output bit of the $j$-th round of SPN.\\
 \end{frame}
 
 \begin{frame}
