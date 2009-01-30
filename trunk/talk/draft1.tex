@@ -530,7 +530,7 @@ Do these work for DES?
 \end{beamercolorbox}
 \end{frame}
 
-\subsection{Linear Attack: 3-round DES}
+\subsection{Linear Attack: 4-round DES}
 \begin{frame}
 \begin{itemize}
 \item{Structurally and cryptographically, DES is similar to SPN.}
@@ -580,6 +580,48 @@ Using the S-Box 5 approximation and the Piling Up Principle we can combine the a
 The bias magnitude for this expression is for this expression is 
 \[ (12/64)^2 + (1 - 12/64)^2 - 1/2 \approx 0.30 \]
 This is the best expression for the 3-round DES.
+\end{frame}
+
+\begin{frame}
+We perform the attack on the 4-round DES similiarly to how we performed the attack on 4-round SPN, by "undoing" the last round.\\
+\vspace{5mm}
+\pause
+Note that in the last round, $C_L$ bits are not changed, only $C_R$ bits are affected. Note also that there is only one $C_R$ bit the 3-round equation. I
+\vspace{5mm}
+\pause
+This bit, $C_R{17}$ is affected by the result of S-Box 1 in round 4. If we guess correctly for the 6 partial subkey bits $K_{4,1}$ to $K_{4,6}$, the 3-round equation will hold with high bias, otherwise it will likely hold with close to 0 bias.\\
+\vspace{5mm}
+\pause
+Thus, this attack will give us $6$ of the $56$ key bits. What this means in terms of time saved over exhaustive search is this: If it takes a year to find a key through exhaustive search of $2^56$ bits, after this attack it will only take $5$ days to exhaustively search the remaining $2^50$ bits.
+\end{frame}
+
+\begin{frame}
+How many pairs do we need? Probabalistic justification:\\
+\vspace{3mm}
+Matsui Lemma 5: Let $N$ be the number of given random plaintexts and $\epsilon$, the bias, be sufficiently small. Let $q^{(i)}$ be the probability that the following equation holds for a subkey candidate $K_n^{(i)}$ and a random variable X:
+\[ F_n(X,K_n)[l_1, l_2,\dots,l_d] = F_n(X, K_n^{(i)})[l_1, l_2, \dots, l_d].\]
+Then if $q^{(i)}$'s are independent, the success rate of the attack is
+\[ \int_{x=-2\sqrt{N}\epsilon}^\infty \left( \prod_{K_n^{(i)} \neq K_n} \int_{-x-4\sqrt{N}\epsilon q^{(i)}}^{x+4\sqrt{N}\epsilon (1 - q^{(i)})} \frac{1}{\sqrt{2\pi}} e^{-y^2/2} dy \right) \frac{1}{\sqrt{2\pi}} e^{-x^2/2} dx \]
+Where the product is taken over all subkey candidates except $K_n$.\\
+\vspace{3mm}
+Let $d = 1$ and $l_1 = 17$ in the above expression - this corresponds to our attack (distribution over guessing for one bit, $CR_{17}$ in the equation). The following table summarizes the sucess rates:
+\begin{center}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+N & 2$\epsilon^{-2}$ & $4\epsilon^{-2}$ & $8\epsilon^{-2}$ & $16\epsilon^{-2}$ \\
+\hline
+Success Rate & 0.486 & 0.785 & 0.967 & 0.999 \\
+\hline
+\end{tabular} 
+\end{center}
+\end{frame}
+
+\begin{frame}
+How many pairs do we need? Continued\\
+\vspace{3mm}
+Using the calculation from the previous slide, we see that for a 4-round DES, our equation holds with bias of about 1 in 4. Thus we will need about $16\times 4^2 = 256$ pairs for the attack to have near perfect chance of sucess.\\
+\vspace{3mm}
+For a full 16-round DES, the best approximation has bias $\sim 1.19\times 10^{-22}$, thus we would need on the order of $2^{47}$ plaintext-ciphertext pairs.
 \end{frame}
 
 \subsection{Differential Attack: 3-round DES}
