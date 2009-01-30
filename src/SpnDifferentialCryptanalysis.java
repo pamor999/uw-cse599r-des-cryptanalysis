@@ -3,7 +3,10 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
-
+/**
+ * Tools for Differential Cryptanalysis of SPN
+ * @author Sourav Sen Gupta
+ */
 public class SpnDifferentialCryptanalysis {
   
   /**
