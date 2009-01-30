@@ -165,8 +165,30 @@ Basic Idea of Differential Cryptanalysis
 \end{frame}
 
 \begin{frame}
-How to exploit those - Differential attack idea
+\begin{definition}[Differential]
+Suppose two plaintext inputs to the system be $X$ and $X'$ with corresponding output ciphertexts $Y$ and $Y'$ respectively. Then the pair of input difference ($\Delta X = X \oplus X'$) and the output difference ($\Delta Y = Y \oplus Y'$) is called a {\it differential} for the system.
+\end{definition}
 
+Vulnerability of DES:\\
+Differential Cryptanalysis exploits the high probability of certain occurrences of differential patterns in the cipher. In DES, this highly probable differentials occur due to
+\begin{itemize}
+\item{S-Boxes show a strong tendency to produce certain differential pairs with high probability, rather than being random.}
+\item{The differences do not get diffused fast enough.}
+\item{Differentials are not affected by the round keys.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+In an $k$-round DES, we can trace the path of a certain input difference to get an output difference with a high probability. This tracing path is known as a {\it differential characteristic}.
+
+\[ \Delta P \rightarrow \Delta X_1 \rightarrow \Delta X_2 \rightarrow \cdots \rightarrow \Delta X_{k-1} \rightarrow \Delta C \]
+
+In an ideal situation, one will expect the probability
+\[ P \left(\Delta C | \Delta P \right) = \frac{1}{2^n} \]
+for an $n$-bit cipher system. Differential attacks seek to exploit a scenario where
+\[ P \left(\Delta C | \Delta P \right) = p_D \gg \frac{1}{2^n} \]
+
+This is essentially a chosen-plaintext attack as we want the specific input difference to occur for every pair.
 \end{frame}
 
 \section{Mathematical Framework}
@@ -176,13 +198,13 @@ Dive into the Mathematics
 \end{beamercolorbox}
 \end{frame}
 
-\subsection{Simplification WLOG}
+\subsection{Substitution-Permutation Network}
 
 \begin{frame}
 \begin{columns}
 \begin{column}{0.6\textwidth}
 \begin{figure}
-\includegraphics[totalheight=0.55\textheight]{des_feistel.jpg}
+\includegraphics[totalheight=0.5\textheight]{des_feistel.jpg}
 \end{figure}
 Let us simplify DES by
 \begin{itemize}
@@ -195,10 +217,14 @@ Let us simplify DES by
 
 \begin{column}{0.4\textwidth}
 \begin{figure}
-\includegraphics[totalheight=0.9\textheight]{spn.jpg}
+\includegraphics[totalheight=0.8\textheight]{spn.jpg}
 \end{figure}
 \end{column}
 \end{columns}
+
+\begin{center}
+{\tiny Disclaimer: This simplification does not affect the discussion of the techniques of Linear/Differential Cryptanalysis.}
+\end{center}
 \end{frame}
 
 \begin{frame}
@@ -208,7 +234,7 @@ Simple Substitution-Permutation Network
 \end{frame}
 
 \begin{frame}
-We can remove much of the complexity of DES without affecting the discussion of the techniques of Linear Cryptanalysis. We define a simple Substitution-Permutation Network Cipher (SPN) which has structural similarity to DES.
+We define a simple Substitution-Permutation Network Cipher (SPN) which has structural similarity to DES.
 
 \begin{itemize}
 \item SPN is a 16-bit block cipher (16-bit plaintext to 16-bit ciphertext) with 16-bit round keys.
