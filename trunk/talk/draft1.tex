@@ -532,28 +532,54 @@ Do these work for DES?
 
 \subsection{Linear Attack: 3-round DES}
 \begin{frame}
-Linear Attack idea ...
+\begin{itemize}
+\item{Structurally and cryptographically, DES is similar to SPN.}
+\item{We will adapt the linear attack on SPN to a linear attack on a 3-round DES algorithm and mount this attack.}
+\item{We will also show how to extend this attack to a full 16-round DES algorithm and show it is faster than an exhaustive search.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+The first step, as before, is to come up with a linear approximation for the S-Boxes used by DES.\\
+\vspace{5mm}
+Note that the S-Boxes here are 6-bit to 4-bit maps. We can use the same technique as before. For a given S-Box $a \in \{1, 2, \dots 8\}, 1 \leq \alpha \leq 63, 1 \leq \beta \leq 15$ we define $NS_{a}(\alpha, \beta)$ as the number of times (out of 64) for S-Box $a$ that for all the input patterns masked by $\alpha$ the output pattern masked by $\beta$ agrees with the value of S-Box $a$.
+\[ NS_{a}(\alpha, \beta) = | \{ X | 0 \leq X < 64, ( \bigoplus_{i=0}^5 X[i]\cdot\alpha[i]) = (\bigoplus_{j=0}^3 S_a(X)[j] \cdot \beta[j])\} | \]
+This looks more complicated, but is infact the same expression as for SPN, except it takes into account all possible S-Boxes.
+\end{frame}
+
+\begin{frame}
+Using $NS$ to find a linear approximation for the S-Boxes.\\
+\vspace{5mm}
+With 6-bit S-Boxes things are not as easy as with 4-bit S-Boxes.
+\begin{figure}
+\includegraphics[totalheight=0.5\textheight]{NS_S5.PNG}
+\caption{Bias for S-Box 5 }
+\end{figure}
+It turns out that the highest bias is for S-Box 5 with $\alpha = 16$ and $\beta = 15$
+\end{frame}
+
+\begin{frame}
+From previous result, the S-Box approximation with highest bias for S-Box 5. Let $X$ be the input bits to the S-Box and let $Y$ be the output bits. Then:
+\[ X_{2} = Y_{1} \oplus Y_{2} \oplus Y_{3} \oplus Y_{4} \]
+Holds with bias of absolute value $\sim 0.31$\\
+\vspace{5mm}
+Tracing through the Feistel function to the right input bits $R$, round key bits $K$, and Feistel function output bits $F$ we get
+\[ R_{17} \oplus F_{25} \oplus F_{14} \oplus F_{8} \oplus F_{3} = K_{26} \]
 
 \end{frame}
 
 \begin{frame}
-Matsui NS for SBoxes ...
-
-\end{frame}
-
-\begin{frame}
-Linear approximations for SBoxes ...
-
-\end{frame}
-
-\begin{frame}
-Piling up over 3 rounds ...
-
-\end{frame}
-
-\begin{frame}
-Demo of the attack ...
-
+Let $P_L$ and $P_R$ be the left and right plaintext bits. Let $C_L$ and $C_R$ be the left and right ciphertext bits. Let $K_i$ be the round key for round $i$. \\
+\vspace{5mm}
+Using the S-Box 5 approximation and the Piling Up Principle we can combine the approximations to get
+\begin{align*}
+ P_L{25} & \oplus P_L{14} \oplus P_L{8} \oplus P_L{3} \oplus \\
+         & C_L{25} \oplus C_L{14} \oplus C_L{8} \oplus C_L{3} \oplus \\
+			& P_R{17} \oplus C_R{17} = K_1{26} \oplus K_3{26} \\
+\end{align*}
+The bias magnitude for this expression is for this expression is 
+\[ (12/64)^2 + (1 - 12/64)^2 - 1/2 \approx 0.30 \]
+This is the best expression for the 3-round DES.
 \end{frame}
 
 \subsection{Differential Attack: 3-round DES}
