@@ -353,13 +353,52 @@ Note that if some $\epsilon_k = 0$ (that is, some $X_k$ has no bias) then the to
 \end{frame}
 
 \begin{frame}
-Combining across SPN rounds ... 
-
+Now, come back to Per-round approximations. We can write down 4 approximations (Let $S_{i,j}$ repesent the $j$-th S-Box in the $i$-th round):
+\begin{eqnarray*}
+S_{1,2}: X_1 \oplus X_3 \oplus X_4 & = & Y_2 \\
+S_{2,2}: X_2 = Y_2 \oplus Y_4 \\
+S_{3,2}: X_2 = Y_2 \oplus Y_4 \\
+S_{3,4}: X_2 = Y_2 \oplus Y_4 \\
+\end{eqnarray*}
+Each of these has a probability bias magnitude of $1/4$. We can use the Piling Up Principle to combine them into a single expression relating plaintext bits to cyphertext bits.
 \end{frame}
 
 \begin{frame}
-The algorithm for the attack ...
+Consider the first 2 rounds:\\
+\vspace{5mm}
+\[  X_1 \oplus X_3 \oplus X_4 = Y_2 \Rightarrow \]
+\[ V_{1,6} = (P_5\oplus K_{1,5}) \oplus (P_7\oplus K_{1,7}) \oplus (P_8\oplus K_{1,8}) \]
+\vspace{2mm}
+\[ X_2 = Y_2 \oplus Y_4 \Rightarrow \]
+\[ V_{2,6} \oplus V_{2,8} = V_{1,6} \oplus K_{2,6} \]
+\vspace{2mm}
+Each of these has a bias of magnitude $1/4$. We can combine:
+\[  V_{2,6} \oplus V_{2,8} \oplus P_5 \oplus P_7 \oplus P_8 \oplus K_{1,5} \oplus K_{1,7} \oplus K_{1,8} \oplus K_{2,6} = 0 \]
+By the Piling Up Principle this expression holds with bias:
+\[ 2 * 1/4 * 1/4 = 1/8 \]
+\end{frame}
 
+\begin{frame}
+Using this principle we can write the following equation over 3 rounds of SPN:
+\[ U_{4,6} \oplus U_{4,8} \oplus U_{4,14} \oplus U_{4, 16} \oplus P_5 \oplus P_7 \oplus P_8 = \Sigma K \]
+Where $\Sigma K$ is the sum over some key bits. Note that Since the key is fixed, $\Sigma K = 0$ or $1$ and thus we can ignore it since we only care about the bias.\\
+\vspace{5mm}
+The magnitude of the bias of the above expression, by the Piling Up Principle, is $1/32$. \\
+\vspace{5mm}
+Next we show how we can extract key bits using this information.
+\end{frame}
+
+\begin{frame}
+Attack Idea:\\
+\vspace{3mm}
+We have an expression that links plaintext bits to input bits to the 4th round of SPN that holds with high bias ($1/32$). We can partially undo the last round by guessing the last key. \\
+\vspace{3mm}
+\pause
+If we guess correctly, the equation will hold with high bias. If we guess wrong, the equation will probabily hold with probability close to 1/2, that is, a bias close to 0.\\
+\vspace{3mm}
+BUT To do this, we don't need to guess the entire key for the last round! Our expression only involves 4 key bits, output from 2 S-Boxes. Thus we only need to guess $2^8 = 256$ values.\\
+\vspace{3mm}
+For each value of the guessed \textit{target partial subkey} we can undo the last round and determine the bias of the equation. Highest bias indicates likely correct guess.
 \end{frame}
 
 \begin{frame}
