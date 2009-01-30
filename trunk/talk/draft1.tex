@@ -402,6 +402,7 @@ Each of these has a bias of magnitude $1/4$. We can combine:
 \[  V_{2,6} \oplus V_{2,8} \oplus P_5 \oplus P_7 \oplus P_8 \oplus K_{1,5} \oplus K_{1,7} \oplus K_{1,8} \oplus K_{2,6} = 0 \]
 By the Piling Up Principle this expression holds with bias:
 \[ 2 * 1/4 * 1/4 = 1/8 \]
+Note the implicit assumption that S-Boxes are independant. More on this later.
 \end{frame}
 
 \begin{frame}
@@ -422,14 +423,38 @@ We have an expression that links plaintext bits to input bits to the 4th round o
 \pause
 If we guess correctly, the equation will hold with high bias. If we guess wrong, the equation will probabily hold with probability close to 1/2, that is, a bias close to 0.\\
 \vspace{3mm}
+\pause
 BUT To do this, we don't need to guess the entire key for the last round! Our expression only involves 4 key bits, output from 2 S-Boxes. Thus we only need to guess $2^8 = 256$ values.\\
 \vspace{3mm}
+\pause
 For each value of the guessed \textit{target partial subkey} we can undo the last round and determine the bias of the equation. Highest bias indicates likely correct guess.
 \end{frame}
 
 \begin{frame}
-Probabilistic justification ...
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{block}{SPN Linear Approximation}
+\begin{align*}
+ U_{4,6} & \oplus U_{4,8} \oplus U_{4,14} \oplus U_{4, 16} \\
+         & \oplus P_5 \oplus P_7 \oplus P_8 = 0 
+\end{align*}
+\end{block}
+\end{column}
+\begin{column}{0.55\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.85\textheight]{SPN_linear.PNG}
+\caption{Linear Attack on SPN}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}
 
+\begin{frame}
+Probabalistic Justification:\\
+\vspace{5mm}
+In general, the number of plaintext-ciphertext pairs needed is related inversely-quadratically to the bias. That is
+\[ N_{pairs} \approx 1 / \epsilon^2 \]
+For the SPN cipher approximation with bias $1/32$ we need about $1000$ pairs. To perform the attack with near full probability of success.
 \end{frame}
 
 \subsection{Differential Attack on SPN}
