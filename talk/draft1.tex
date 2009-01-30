@@ -790,24 +790,42 @@ Using the calculation from the previous slide, we see that for a 4-round DES, ou
 For a full 16-round DES, the best approximation has bias $\sim 1.19\times 10^{-22}$, thus we would need on the order of $2^{47}$ plaintext-ciphertext pairs.
 \end{frame}
 
-\subsection{Differential Attack: 3-round DES}
+\subsection{Differential Attack: 4-round DES}
 \begin{frame}
-Differential Attack idea ...
+Differential Attack Idea
+
+Similar to the differential attack on SPN, here we care about the differential characteristics of the cipher. So, the basic idea is as follows
+
+\begin{itemize}
+\item{Construct the difference tables for the S-Boxes}
+\item{Find the most probable difference pairs}
+\item{Combine the pairs through all the rounds to get a higly probable differential characteristic until the penultimate round}
+\item{Exploit this differential characteristic by chosing a number of pairs of pliantexts with the desired difference and undo the last round by guessing the keybits}
+\item{If the initial choice of the input difference was smart, we will only need to guess a few keybits}
+\item{The guess approving the differential characteristic with highest probability is correct}
+\end{itemize}
 
 \end{frame}
 
 \begin{frame}
-Differentials for SBoxes ...
+The chosen input difference:$\Delta P = 20 00 00 00 00 00 00 00$
 
+Round 1 Differential
+
+\[ \Delta P = 20 00 00 00 00 00 00 00 \rightarrow 20 00 00 00 00 00 00 00 = \Delta V_1 \]
+Probability: $p_1 = 1$ as Feistel gives output difference $0$ for input $0$
+
+Round 2 Differential
+
+\[ \Delta U_2 = \Delta V_1 = 20 00 00 00 00 00 00 00 \rightarrow \]
+
+this calculations and coding has not been completed yet ... will be done ...
 \end{frame}
 
 \begin{frame}
-Differential characteristics for SBoxes ...
+Differentials for SBoxes
 
-\end{frame}
 
-\begin{frame}
-Piling up over 3 rounds ...
 
 \end{frame}
 
