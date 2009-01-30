@@ -2,6 +2,8 @@ import java.util.BitSet;
 
 
 public class DesImpl {
+  public static final boolean DES_INITIAL_PERMUTATION = false;
+  
   // S Boxes for DES
   public static final int[][][] S = new int[][][] {
     { { 14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5,  9,  0,  7 },
@@ -56,6 +58,42 @@ public class DesImpl {
   public static final int[] C_PERM = new int[] {
     16,  7, 20, 21, 29, 12, 28, 17,  1, 15, 23, 26,  5, 18, 31, 10,
     2,   8, 24, 14, 32, 27,  3,  9, 19, 13, 30,  6, 22, 11,  4, 25
+  };
+  
+  // for cryptanalysis
+  public static final int[] C_PERM_INV = new int[] {
+	9,//1
+	17,//2
+	23,//3
+	31,//4
+	13,//5
+	28,//6
+	2,//7
+	18,//8
+	24,//9
+	16,//10
+	30,//11
+	6,//12
+	26,//13
+	20,//14
+	10,//15
+	1,//16
+	8,//17
+	14,//18
+	25,//19
+	3,//20
+	4,//21
+	29,//22
+	11,//23
+	19,//24
+	32,//25
+	12,//26
+	22,//27
+	7,//28
+	5,//29
+	27,//30
+	15,//31
+	21,//32
   };
   
   // PC-1 box for DES Key Schedule
@@ -164,17 +202,26 @@ public class DesImpl {
   
   public BitSet SBox(BitSet ER) {
     // compute results of s-boxes
-    BitSet C = new BitSet(48);
+    BitSet C = new BitSet(32);
     for (int i = 0; i < 8; i++) {
-      
-      int row = (ER.get(0 + (6 * i)) ? 2 : 0) + (ER.get(5 + (6 * i)) ? 1 : 0);
-      int col = (ER.get(1 + (6 * i)) ? 8 : 0) + (ER.get(2 + (6 * i)) ? 4 : 0)
-              + (ER.get(3 + (6 * 1)) ? 2 : 0) + (ER.get(4 + (6 * i)) ? 1 : 0);
-      int sval = S[i][row][col];
-      for (int j = 0; j < 4; j++) {
-        C.set(i * 4 + j, (((sval >> (3 - j)) & 1) != 0 )); 
-      }
+    	BitSet B_i = ER.get(6 * i, 6 * (i + 1));
+    	BitSet S_i = SBoxSingle(i, B_i);
+    	for (int j = 0; j < 4; j++) {
+    		C.set(4 * i + j, S_i.get(j));
+    	}
     }
+    
+    
+//    for (int i = 0; i < 8; i++) {
+//      
+//      int row = (ER.get(0 + (6 * i)) ? 2 : 0) + (ER.get(5 + (6 * i)) ? 1 : 0);
+//      int col = (ER.get(1 + (6 * i)) ? 8 : 0) + (ER.get(2 + (6 * i)) ? 4 : 0)
+//              + (ER.get(3 + (6 * 1)) ? 2 : 0) + (ER.get(4 + (6 * i)) ? 1 : 0);
+//      int sval = S[i][row][col];
+//      for (int j = 0; j < 4; j++) {
+//        C.set(i * 4 + j, (((sval >> (3 - j)) & 1) != 0 )); 
+//      }
+//    }
     return C;
   }
   
@@ -183,6 +230,16 @@ public class DesImpl {
     BitSet P = new BitSet(32);
     for (int i = 0; i < 32; i++) {
       P.set(i, C.get(C_PERM[i] - 1));
+    }
+    return P;
+  }
+  
+  // for cryptanalysis
+  public BitSet PermuteCInv(BitSet C) {
+    // un permute
+    BitSet P = new BitSet(32);
+    for (int i = 0; i < 32; i++) {
+      P.set(i, C.get(C_PERM_INV[i] - 1));
     }
     return P;
   }
@@ -221,6 +278,12 @@ public class DesImpl {
 	  return K48round;
   }
   
+  /**
+   * 
+   * @param R 32-bit value
+   * @param K 48-bit key
+   * @return
+   */
   public BitSet Feistel(BitSet R, BitSet K) {
     // expand
     BitSet ER = E(R);
@@ -253,7 +316,7 @@ public class DesImpl {
 	  }
 	  
 	  // initial permutation IP
-	  BitSet P_perm = InitPerm(P);
+	  BitSet P_perm = DES_INITIAL_PERMUTATION ? InitPerm(P) : P;
 	  
 	  
 	  // the Feistel rounds
@@ -263,15 +326,16 @@ public class DesImpl {
 	  for (int round=1; round <= numRounds; round++){
 		  BitSet Kround = KeySchedule(K, round);
 		  BitSet[] result = FeistelRound(L, R, Kround);
+		  
 		  L = result[0];
 		  R = result[1];		  
 	  }
 	  
-	  // codeword after the Feistel rounds
-	  BitSet C = Util.concatenate(L, 32, R, 32);
+	  // codeword after the Feistel rounds (udoing the last swap)
+	  BitSet C = Util.concatenate(R, 32, L, 32);
 	  	  
 	  // inverse IP
-	  BitSet C_final = InvInitPerm(C);
+	  BitSet C_final = DES_INITIAL_PERMUTATION ? InvInitPerm(C) : C;
 	  
 	  return C_final;
   }
@@ -284,10 +348,7 @@ public class DesImpl {
 	  }
 	  
 	  // initial permutation IP
-	  BitSet C_perm = new BitSet(64); 
-	  for (int i=0; i<64; i++){
-		  C_perm.set(i, C.get(IP[i]-1));
-	  }
+	  BitSet C_perm = DES_INITIAL_PERMUTATION ? InitPerm(C) : C;
 	  
 	  // the inverse Feistel rounds
 	  BitSet L = C_perm.get(0, 32);
@@ -295,19 +356,17 @@ public class DesImpl {
 	  
 	  for (int round=numRounds; round > 0; round--){
 		  BitSet Kround = KeySchedule(K, round);
-		  BitSet[] result = FeistelRound(R, L, Kround);
-		  L = result[1];
-		  R = result[0];		  
+		  BitSet[] result = FeistelRound(L, R, Kround);
+		  // undo the last swap
+		  L = result[0];
+		  R = result[1];		  
 	  }
 	  
-	  // decoded plaintext after the inverse Feistel rounds
-	  BitSet P = Util.concatenate(L, 32, R, 32);
+	  // decoded plaintext after the inverse Feistel rounds (udoing last swap)
+	  BitSet P = Util.concatenate(R, 32, L, 32);
 	  
 	  // inverse IP
-	  BitSet P_final = new BitSet(64); 
-	  for (int i=0; i<64; i++){
-		  P_final.set(i, P.get(IP_inv[i]-1));
-	  }
+	  BitSet P_final = DES_INITIAL_PERMUTATION ? InvInitPerm(P) : P;
 	  
 	  return P_final;
   }

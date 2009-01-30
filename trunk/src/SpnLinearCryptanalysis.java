@@ -56,7 +56,7 @@ public class SpnLinearCryptanalysis {
         Util.toBitSet(0xDEAD, 16),
         Util.toBitSet(0x5678, 16),
         Util.toBitSet(0xACE1, 16),
-        Util.toBitSet(0xF2E4, 16),
+        Util.toBitSet(0xFEED, 16),
     };
     
     // 1 - generate 10000 pairs
