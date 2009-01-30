@@ -577,7 +577,7 @@ Using the S-Box 5 approximation and the Piling Up Principle we can combine the a
          & C_L{25} \oplus C_L{14} \oplus C_L{8} \oplus C_L{3} \oplus \\
 			& P_R{17} \oplus C_R{17} = K_1{26} \oplus K_3{26} \\
 \end{align*}
-The bias magnitude for this expression is for this expression is 
+The bias magnitude for this expression is
 \[ (12/64)^2 + (1 - 12/64)^2 - 1/2 \approx 0.30 \]
 This is the best expression for the 3-round DES.
 \end{frame}
@@ -586,7 +586,7 @@ This is the best expression for the 3-round DES.
 We perform the attack on the 4-round DES similiarly to how we performed the attack on 4-round SPN, by "undoing" the last round.\\
 \vspace{5mm}
 \pause
-Note that in the last round, $C_L$ bits are not changed, only $C_R$ bits are affected. Note also that there is only one $C_R$ bit the 3-round equation. I
+Note that in the last round, $C_L$ bits are not changed, only $C_R$ bits are affected. Note also that there is only one $C_R$ bit the 3-round equation.\\
 \vspace{5mm}
 \pause
 This bit, $C_R{17}$ is affected by the result of S-Box 1 in round 4. If we guess correctly for the 6 partial subkey bits $K_{4,1}$ to $K_{4,6}$, the 3-round equation will hold with high bias, otherwise it will likely hold with close to 0 bias.\\
