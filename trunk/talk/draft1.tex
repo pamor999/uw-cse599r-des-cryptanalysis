@@ -48,12 +48,38 @@ in head/foot}%
 \section{Introduction}
 
 \begin{frame}
+\textit{\huge $\mathcal O$}nce upon a time ... \pause there was a secure standard encryption algorithm called DES (Data Encryption Standard) ...
+
+\vspace{2mm}
+\pause
+\begin{itemize}[<+->]
+\item{1973: NBS publishes a request for a standard encryption algorithm}
+\item{1975: DES is published in the Federal Register for comment}
+\item{1976: DES is approved as a standard}
+\item{1977: DES is published as a FIPS standard FIPS PUB 46}
+\item{1992: Biham and Shamir report the {\it differential cryptanalysis}}
+\item{1993: DES is reaffirmed for the third time as FIPS 46-2}
+\item{1994: The first {\it linear cryptanalysis} of DES is performed by Matsui}
+\item{1997: The DESCHALL Project breaks a DES message in public}
+\item{1998: The EFF's Deep Crack {\it brute forces} a DES key in 56 hours}
+\item{1999: Deep Crack and distributed.net break DES in 22 hours}
+\item{1999: FIPS 46-3 reaffirms DES, preferring the use of Triple DES}
+\item{2001: The Advanced Encryption Standard (AES) is published in FIPS 197}
+\item{2002: The AES standard becomes effective}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+\begin{frame}
 \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
 A quick review of DES
 \end{beamercolorbox}
 \end{frame}
 
-\subsection{Data Encrytption Standard}
+\subsection{Data Encryption Standard}
 \begin{frame}
 \begin{columns}
 \begin{column}{0.6\textwidth}
@@ -86,6 +112,8 @@ DES : (Plaintext ($P$), Key ($K$)) $\mapsto$ Cipher ($C$)
 \end{figure}
 \end{column}
 \end{columns}
+
+{\tiny Designers: H Feistel, W Tuchman, D Coppersmith, A Konheim, E Grossman, B Notz, L Smith and B Tuckerman from IBM}
 \end{frame}
 
 \begin{frame}
@@ -123,16 +151,18 @@ Mathematically, the different pieces of DES are:
 \begin{itemize}
 \item{Initial Permutation \\ $\qquad IP : (0,1)^{64} \rightarrow (0,1)^{64}$}
 \item{DES Unit Block functions \\ $\qquad \sigma_{i+1} (L_i,R_i)$ for $i = 0,1,...,15$}
-\item{Transpositions \\ $\qquad \tau : (L_{i+1},R_{i+1}) \mapsto (R_{i+1},L_{i+1})$ for $i = 0,1,...,14$}
+\item{Transposition \\ $\qquad \tau : (L_{i+1},R_{i+1}) \mapsto (R_{i+1},L_{i+1})$ for $i = 0,1,...,14$}
 \item{Inverse Initial Permutation \\ $\qquad IP^{-1} : (0,1)^{64} \rightarrow (0,1)^{64}$}
 \end{itemize}
 
+\pause
 \begin{block}{Algebraic Representation of DES}
-$\qquad C = DES_K (P) = IP^{-1} \sigma_{16} \tau \cdots \tau \sigma_1 IP (P)$
+$\qquad C \:  = \:  DES_K (P) \: = \: IP^{-1} \: \sigma_{16} \:  \tau \: \cdots \:  \tau \:  \sigma_1 \: IP \: (\: P \: )$
 
-$\qquad P = DES^{-1}_K (C) = IP^{-1} \sigma_{1} \tau \cdots \tau \sigma_{16} IP (C)$
+$\qquad P \: = \: DES^{-1}_K (C) \: = \: IP^{-1} \: \sigma_{1} \: \tau \: \cdots \: \tau \: \sigma_{16} \: IP \: (\: C\: )$
 \end{block}
 
+\pause
 \vspace{0.2in}
 {\small Note: The inverse DES comes from the fact that $\tau^2 = \sigma_i^2 = 1$}
 \end{frame}
@@ -147,18 +177,22 @@ Basic Idea of Linear Cryptanalysis
 \begin{frame}
 Linear Attack on DES idea:
 
-\begin{itemize}
+\begin{itemize}[<+->]
 \item S-Boxes depend on a relatively small number of bits (6) which allows us to write down linear (or affine) expressions that approximate S-Boxes
 \item The effects of one round do not diffuse quickly over following rounds. Thus linear or affine expressions (as above) that hold per-round can be combined across rounds
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-Specifically, if $P_{i}$ are plaintext bits, $C_{i}$ are cyphertext bits, and $K_{i}$ are subkey bits, then we wish to find an expression of the form
+Specifically, if $P_{i}$ are plaintext bits, $C_{i}$ are ciphertext bits, and $K_{i}$ are subkey bits, then we wish to find an expression of the form
 \[ P_{i_1} \oplus P_{i_2} \cdots P_{i_j} \oplus C_{i_1} \oplus C_{i_2} \cdots C_{i_k} = K_{i_1} \oplus K_{i_2} \oplus K_{i_m} \]
-Such that this expression has a high \textit{or} low probability of occurence.\\
+\pause such that this expression has a high \textit{or} low probability of occurrence.
+
 \vspace{5mm}
-Consider: No such obvious expression should exist, otherwise the cipher is trivially weak. If we were to randomly select bits for the above expression, it would hold exactly $1/2$ the time. If we find an expression such as above that displays a high \textit{bias}, that is, it holds much more or less freqently than $1/2$ the time, we can exploit this.
+\pause Consider: No such obvious expression should exist, otherwise the cipher is trivially weak. If we were to randomly select bits for the above expression, it would hold exactly $1/2$ the time. 
+
+\vspace{5mm}
+\pause If we find an expression such as above that displays a high \textit{bias}, that is, it holds much more or less frequently than $1/2$ the time, we can exploit this.
 \end{frame}
 
 
@@ -176,26 +210,26 @@ Then the pair of input difference ($\Delta X = X \oplus X'$) and the output diff
 \end{definition}
 
 \vspace{0.2in}
-Vulnerability of DES:
+\pause Vulnerability of DES:
 
-\begin{itemize}
+\begin{itemize}[<+->]
 \item{S-Boxes show a strong tendency to produce certain differential pairs with high probability, rather than being random}
 \item{The differences do not get diffused fast enough through the permutations}
-\item{Differentials are not affected by the round keys as they get xor-ed out}
+\item{Differentials are not affected by the round keys as they get XOR-ed out}
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-In an $k$-round DES, we can trace the path of a certain input difference to get an output difference with a high probability. This tracing path is known as a {\it differential characteristic}.
+In an $k$-round DES, we can trace the path of a certain input difference to get an output difference with a high probability. \pause This tracing path is known as a {\it differential characteristic}.
 
 \[ \Delta P \rightarrow \Delta C^{(1)} \rightarrow \Delta C^{(2)} \rightarrow \cdots \rightarrow \Delta C^{(k-1)} \rightarrow \Delta C \]
 
-In an ideal situation, one will expect the probability
+\pause In an ideal situation, one will expect the probability
 \[ P \left(\Delta C | \Delta P \right) = \frac{1}{2^n} \]
-for an $n$-bit cipher system. Differential attacks seek to exploit a scenario where
+for an $n$-bit cipher system. \pause Differential attacks seek to exploit a scenario where
 \[ P \left(\Delta C | \Delta P \right) = p_D \gg \frac{1}{2^n} \]
 
-This is essentially a chosen-plaintext attack as we want the specific input difference to occur for every pair.
+\pause Note: This is essentially a chosen-plaintext attack as we want the specific input difference to occur for every pair.
 \end{frame}
 
 \section{Mathematical Framework}
@@ -213,9 +247,9 @@ Dive into the Mathematics
 \begin{figure}
 \includegraphics[totalheight=0.5\textheight]{des_feistel.jpg}
 \end{figure}
-Let us simplify DES by
-\begin{itemize}
-\item{Reducing the bitlength from $64$ to $16$}
+\pause Let us simplify DES by
+\begin{itemize}[<+->]
+\item{Reducing the code length from $64$ to $16$}
 \item{Removing expansion function $E(R)$}
 \item{Taking identical S-Boxes of size $4$ bits}
 \item{Repeating over less rounds}
@@ -223,6 +257,7 @@ Let us simplify DES by
 \end{column}
 
 \begin{column}{0.4\textwidth}
+\pause
 \begin{figure}
 \includegraphics[totalheight=0.8\textheight]{spn.jpg}
 \end{figure}
@@ -230,7 +265,7 @@ Let us simplify DES by
 \end{columns}
 
 \begin{center}
-{\tiny Disclaimer: This simplification does not affect the discussion of the techniques of Linear/Differential Cryptanalysis.}
+\pause {\tiny Disclaimer: This simplification does not affect the discussion of the techniques of Linear/Differential Cryptanalysis.}
 \end{center}
 \end{frame}
 
@@ -241,9 +276,9 @@ Simple Substitution-Permutation Network
 \end{frame}
 
 \begin{frame}
-We define a simple Substitution-Permutation Network Cipher (SPN) which has structural similarity to DES.
+We construct a simple Substitution-Permutation Network Cipher (SPN) which has structural similarity to DES.
 
-\begin{itemize}
+\begin{itemize}[<+->]
 \item SPN is a 16-bit block cipher (16-bit plaintext to 16-bit ciphertext) with 16-bit round keys
 \item Each round consists of a substitution and a permutation (much like in DES)
 \item The substitution is the result of splitting the 16-bit input block to a round in to 4$\times$4-bit sub-blocks. Each 4-bit sub-block is then mapped across a 4-bit to 4-bit S-Box. We use the same S-Box throughout
@@ -269,7 +304,7 @@ And the following 16-bit permutation:
 \end{figure}
 
 \vspace{5mm}
-The S-Box provides the {\it confusion} function and the permutation applies the {\it confusion} operation in SPN, thus making it cryptographically similar to DES.
+\pause The S-Box provides the {\it confusion} function and the permutation applies the {\it confusion} operation in SPN, thus making it cryptographically similar to DES.
 \vspace{5mm}
 
 \end{frame}
@@ -282,34 +317,37 @@ Mathematics of Linear Cryptanalysis
 \end{frame}
 
 \begin{frame}
-Basic Definitions for the Linear attack:
+Basic Definitions for the Linear attack
 
 \vspace{5 mm}
-Linear cryptanalysis tries to take advantage of high probability occurrences of linear expressions involving plaintext bits, ciphertext bits and subkey bits. It is a {\it known plaintext attack}.
+\pause Linear cryptanalysis tries to take advantage of high probability occurrences of linear expressions involving plaintext bits, ciphertext bits and subkey bits. It is a {\it known plaintext attack}.
 
 \vspace{5 mm}
-Define $P_i$ where $i = 1, 2, \dots 16$ as the $i$-th plaintext bit.\\
-Define $C_i$ where $i = 1, 2, \dots 16$ as the $i$-th cyphertext bit.\\
-Define $U_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th input bit to the $j$-th round of SPN.\\
-Define $V_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th output bit of the $j$-th round of SPN.\\
+\pause Define 
+\begin{itemize}[<+->]
+\item{$P_i$ where $i = 1, 2, \dots 16$ as the $i$-th plaintext bit}
+\item{$C_i$ where $i = 1, 2, \dots 16$ as the $i$-th ciphertext bit}
+\item{$U_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th input bit to the $j$-th round of SPN}
+\item{$V_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th output bit of the $j$-th round of SPN}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-Linear and Affine approximation of S-Box:
+Linear and Affine approximation of S-Box
 
 \vspace{5mm}
-\begin{itemize}
+\begin{itemize}[<+->]
 \item Question: How do we come up with the desired expression for the entire cipher? 
 \item Hint: We start by looking at the only non-linear component, the S-Box.
 \end{itemize}
 
 \vspace{5mm}
-To find the linear/affine approximation of the S-Box we simply consider every possible expression of the input bits $X_i$ and output bits $Y_j$. Thus the expression has the form
+\pause To find the linear/affine approximation of the S-Box we simply consider every possible expression of the input bits $X_i$ and output bits $Y_j$. \pause Thus the expression has the form
 \[ \bigoplus_{i \in U} X_i = \bigoplus_{j \in V} Y_j \]
-Where $U$ and $V$ range over all possible subsets of $\{1, 2, 3 ,4\}$. We then compare how often this expression coincides with the S-Box.
+where $U$ and $V$ range over all possible subsets of $\{1, 2, 3 ,4\}$. \pause We then compare how often this expression coincides with the S-Box.
 
 \vspace{5mm}
-Note that there are 16 possibilities for $U$ and $V$, hence 256 total possible expressions (for a 4-bit S-box).
+\pause Note that there are 16 possibilities for $U$ and $V$, hence 256 total possible expressions (for a 4-bit S-box).
 \end{frame}
 
 \begin{frame}
@@ -317,23 +355,23 @@ S-Box Approximation Example
 
 \vspace{5mm}
 \begin{columns}
-\begin{column}{0.7\textwidth}
-We can take the following expression as an example:
-\[ X_2 \oplus X_3 = Y_1 \oplus Y_3 \oplus Y_4 \]
-Applying all possible values for the input $X$ bits it turns out that the expression holds in 12 out of the 16 cases. Hence, this expression has a bias of $12/16 - 1/2 = 1/4$.
-\end{column}
-
 \begin{column}{0.3\textwidth}
 \begin{figure}
 \includegraphics[width=0.7\textwidth]{spn_sbox_unkeyed.jpg}
 \end{figure}
 \end{column}
+
+\begin{column}{0.7\textwidth}
+We can take the following expression as an example:
+\[ X_2 \oplus X_3 = Y_1 \oplus Y_3 \oplus Y_4 \]
+\pause Applying all possible values for the input $X$ bits it turns out that the expression holds in 12 out of the 16 cases. \pause Hence, this expression has a bias of $12/16 - 1/2 = 1/4$.
+\end{column}
 \end{columns}
 
 \vspace{5mm}
-Similarly the following expression
+\pause Similarly the following expression
 \[ X_3 \oplus X_4 = Y_1 \oplus Y_4 \]
-Has a bias of $-3/8$, which is higher in magnitude than the previous one. It is the magnitude of the bias that is important.
+Has a bias of $-3/8$, which is higher in magnitude than the previous one. \pause It is the magnitude of the bias that is important.
 \end{frame}
 
 \begin{frame}
@@ -355,7 +393,7 @@ What this means for 1 Round:
 Note, from the previous table, that the expression \[ X_1 \oplus X_3 \oplus X_4 = Y_2 \] has a bias of $+1/4$.
 
 \vspace{5mm}
-Note also that $U_1 = P \oplus K_1$. 
+\onslide<2->{Note also that $U_1 = P \oplus K_1$.}
 \end{column}
 \begin{column}{0.6\textwidth}
 \begin{figure}
@@ -365,26 +403,26 @@ Note also that $U_1 = P \oplus K_1$.
 \end{columns}
 
 \vspace{5mm} 
-We can now write down the following linear approximation across the 1st round of SPN:
+\onslide<3->{We can now write down the following linear approximation across the 1st round of SPN:
 \begin{eqnarray*}
-V_{1,6} & = & U_{1,5} \oplus U_{1,7} \oplus U_{1,8} \mbox{  $\leftarrow$ S-Box approximation above}\\
+V_{1,6} & = & U_{1,5} \oplus U_{1,7} \oplus U_{1,8} \quad \mbox{  $\leftarrow$ S-Box $S_{12}$ approximation above}\\
 		  & = & (P_5\oplus K_{1,5}) \oplus (P_7\oplus K_{1,7}) \oplus (P_8\oplus K_{1,8})
 \end{eqnarray*}
 
-This expression holds with probability of $3/4$ (bias of $+1/4$)
+\pause This expression holds with probability of $3/4$ (bias of $+1/4$)}
 \end{frame}
 
 \begin{frame}
-We can get expressions that hold with some non-$1/2$ probability for every round. But we must somehow combine them to write an expression relating the plaintext and ciphertext bits. We use the Piling Up Principle for this purpose.
+We can get expressions that hold with some non-$1/2$ probability for every round. But we must somehow combine them to write an expression relating the plaintext and ciphertext bits. \pause We use the Piling Up Principle for this purpose.
 
 \vspace{5mm}
-Note:
+\pause Note:
 
 $\qquad X_1 \oplus X_2 = 0$ is a linear expression equivalent to $X_1 = X_2$\\
 $\qquad X_1 \oplus X_2 = 1$ is an affine expression equivalent to $X_1 \neq X_2$
 
 \vspace{5mm}
-Assume the following probability distribution
+\pause Assume the following probability distribution
 \[ Pr(X_1 = i)  = \left\{ \begin{array}{ll}
          p_1 & \mbox{$i = 0$};\\
          (1 - p_1) & \mbox{$i = 1$}.\end{array} \right. \] 
@@ -403,14 +441,14 @@ Assuming that $X_1$ and $X_2$ are independent, we get
          (1 - p_1) p_2 & \mbox{$i = 1, j = 0$} \\
 			p_1 (1 - p_2) & \mbox{$i = 0, j = 1$} \\
 			(1 - p_1)(1 - p_2) & \mbox{$i = 1, j = 1$}.\end{array} \right. \] 
-Now, note that $X_1 \oplus X_2 = 0 \Rightarrow X_1 = 1, X_2 =1$ OR $X_1 = 0, X_2 = 0$. Hence,
+\pause Now, note that $X_1 \oplus X_2 = 0 \Rightarrow X_1 = 1, X_2 =1$ OR $X_1 = 0, X_2 = 0$. \pause Hence,
 \begin{eqnarray*}
  Pr(X_1 \oplus X_2 = 0) & = & Pr(X_1=0,X_2=0) + Pr(X_1=1,X_2=1) \\
 								& = & p_1p_2 + (1 - p_1)(1-p_2)
 \end{eqnarray*}
-If we write $p_k = 1/2 + \epsilon_k$ we have
+\pause If we write $p_k = 1/2 + \epsilon_k$ we have
 \[ Pr(X_1 \oplus X_2 = 0) = 1/2 + 2\epsilon_1 \epsilon_2 \]
-Hence the bias of $X_1 \oplus X_2 = 0$ is 
+\pause Hence the bias of $X_1 \oplus X_2 = 0$ is 
 \[ 2 \epsilon_1 \epsilon_2 \]
 That is, twice the product of the bias of the original expressions.
 \end{frame}
@@ -418,27 +456,27 @@ That is, twice the product of the bias of the original expressions.
 \begin{frame}
 Piling Up Principle (continued) - The Piling Up Lemma:\\
 \vspace{5mm}
-We extend the idea on the previous slide to the general case: For $n$ independant random binary variables, $X_1, X_2, \dots, X_n$, 
+We extend the idea on the previous slide to the general case \pause : For $n$ independent random binary variables, $X_1, X_2, \dots, X_n$, 
 \[ Pr(X_1 \oplus X_2 \cdots \oplus X_n = 0) = 1/2 + 2^{n-1} \prod_{i=1}^n \epsilon_i \]
-In terms of bias,
+\pause In terms of bias,
 \[ \epsilon_{1,2,\dots,n} = 2^{n-1} \prod_{i = 1}^n \epsilon_i \]
 Where $\epsilon_{1,2,\dots,n}$ is the total bias of $X_1 \oplus X_2 \cdots \oplus X_n = 0$. \\
 \vspace{5mm}
-Note that if some $\epsilon_k = 0$ (that is, some $X_k$ has no bias) then the total bias will be $0$. More about the probabilistic analysis later.
+\pause Note that if some $\epsilon_k = 0$ (that is, some $X_k$ has no bias) then total bias will be $0$. More about the probabilistic analysis later.
 \end{frame}
 
 \begin{frame}
 
 \begin{columns}
 \begin{column}{0.6\textwidth}
-Now, come back to per-round approximations. We can write down 4 approximations ($S_{ij}$ repesents the $j$-th S-Box in the $i$-th round):
+Now, come back to per-round approximations. We can write down 4 approximations ($S_{ij}$ represents the $j$-th S-Box in the $i$-th round):
 \begin{align*}
 & S_{12}: X_1 \oplus X_3 \oplus X_4 = Y_2 \\
 & S_{22}: X_2 = Y_2 \oplus Y_4 \\
 & S_{32}: X_2 = Y_2 \oplus Y_4 \\
 & S_{34}: X_2 = Y_2 \oplus Y_4 \\
 \end{align*}
-Each of these has a probability bias magnitude of $1/4$. We can use the Piling Up Principle to combine them into a single expression relating plaintext bits to cyphertext bits.
+\onslide<2->{Each of these has a probability bias magnitude of $1/4$. We can use the Piling Up Principle to combine them into a single expression relating plaintext bits to ciphertext bits.}
 \end{column}
 
 \begin{column}{0.4\textwidth}
@@ -461,10 +499,12 @@ Consider the first 2 rounds:
 \[ X_2 = Y_2 \oplus Y_4 \: \Rightarrow \: (V_{1,6} \oplus K_{2,6}) =  V_{2,6} \oplus V_{2,8}\]
 
 \vspace{2mm}
-Each of these has a bias of magnitude $1/4$ and we can combine to obtain:
-\[ V_{2,6} \oplus V_{2,8} \oplus P_5 \oplus P_7 \oplus P_8 \oplus K_{1,5} \oplus K_{1,7} \oplus K_{1,8} \oplus K_{2,6} = 0 \]
-By the Piling Up Principle this holds with bias
-\[ 2 \times 1/4 \times 1/4 = 1/8 \]
+\onslide<2->{Each of these has a bias of magnitude $1/4$ and we can combine to obtain:
+\[ V_{2,6} \oplus V_{2,8} \oplus P_5 \oplus P_7 \oplus P_8 \oplus K_{1,5} \oplus K_{1,7} \oplus K_{1,8} \oplus K_{2,6} = 0 \]}
+
+\vspace{2mm}
+\onslide<3->{By the Piling Up Principle this holds with bias
+\[ 2 \times 1/4 \times 1/4 = 1/8 \]}
 \end{column}
 
 \begin{column}{0.4\textwidth}
@@ -475,18 +515,18 @@ By the Piling Up Principle this holds with bias
 \end{columns}
 
 \vspace{2mm}
-Note the implicit assumption that S-Boxes are independent. More on this later.
+\onslide<4->{Note the implicit assumption that S-Boxes are independent. More on this later.}
 
 \end{frame}
 
 \begin{frame}
 Using this principle we can write the following equation over 3 rounds of SPN:
 \[ U_{4,6} \oplus U_{4,8} \oplus U_{4,14} \oplus U_{4, 16} \oplus P_5 \oplus P_7 \oplus P_8 = \Sigma K \]
-Where $\Sigma K$ is the sum over some key bits. Note that Since the key is fixed, $\Sigma K = 0$ or $1$ and thus we can ignore it since we only care about the bias.\\
+\pause Where $\Sigma K$ is the sum over some key bits. Note that Since the key is fixed, $\Sigma K = 0$ or $1$ and thus we can ignore it since we only care about the bias.\\
 \vspace{5mm}
-The magnitude of the bias of the above expression, by the Piling Up Principle, is $1/32$. \\
+\pause The magnitude of the bias of the above expression, by the Piling Up Principle, is $1/32$. \\
 \vspace{5mm}
-Next we show how we can extract key bits using this information.
+\pause Next we show how we can extract key bits using this information.
 \end{frame}
 
 \begin{frame}
@@ -494,13 +534,13 @@ Attack Idea:\\
 \vspace{3mm}
 We have an expression that links plaintext bits to input bits to the 4th round of SPN that holds with high bias ($1/32$). 
 \[ U_{4,6} \oplus U_{4,8} \oplus U_{4,14} \oplus U_{4, 16} \oplus P_5 \oplus P_7 \oplus P_8 = \Sigma K \]
-We can partially undo the last round by guessing the last key. \\
+\pause We can partially undo the last round by guessing the last key. \\
 \vspace{3mm}
 \pause
-If we guess correctly, the equation will hold with high bias. If we guess wrong, the equation will probabily hold with probability close to 1/2, that is, a bias close to 0.\\
+If we guess correctly, the equation will hold with high bias. If we guess wrong, the equation will probably hold with probability close to 1/2, that is, a bias close to 0.\\
 \vspace{3mm}
 \pause
-BUT To do this, we don't need to guess the entire key for the last round! Our expression only involves 4 fourth round input ($U_4$) bits, output from 2 S-Boxes of the third round. Thus we only need to guess $2^8 = 256$ values.\\
+BUT To do this, we don't need to guess the entire key for the last round! \pause Our expression only involves 4 fourth round input ($U_4$) bits, output from 2 S-Boxes of the third round. Thus we only need to guess $2^8 = 256$ values.\\
 \vspace{3mm}
 \pause
 For each value of the guessed \textit{target partial subkey} we can undo the last round and determine the bias of the equation. Highest bias indicates likely correct guess.
@@ -526,11 +566,11 @@ For each value of the guessed \textit{target partial subkey} we can undo the las
 \end{frame}
 
 \begin{frame}
-Probabalistic Justification:\\
+Probabilistic justification for number of pairs:\\
 \vspace{5mm}
-In general, the number of plaintext-ciphertext pairs needed is related inversely-quadratically to the bias. That is
+\pause In general, the number of plaintext-ciphertext pairs needed is related inversely-quadratically to the bias. That is
 \[ N_{pairs} \approx 1 / \epsilon^2 \]
-For the SPN cipher approximation with bias $1/32$ we need about $1000$ pairs. To perform the attack with near full probability of success.
+\pause For the SPN cipher approximation with bias $1/32$ we need about $1000$ pairs to perform the attack with near full probability of success.
 \end{frame}
 
 \begin{frame}
@@ -545,14 +585,17 @@ Mathematics of Differential Cryptanalysis
 \end{frame}
 
 \begin{frame}
-Differential Cryptanalysis tries to exploit the high probability of certain occurrences of differential characteristics $(\Delta P \rightarrow \Delta C)$ in the cipher. This is a chosen plaintext attack.
-
-\vspace{2mm}
 Differential: $(\Delta P, \Delta C) = (P \oplus P', C \oplus C')$
 
 \vspace{5mm}
-We have to analyze the cipher in pieces. The basic idea is
-\begin{itemize}
+\pause Differential Cryptanalysis tries to exploit the high probability of certain occurrences of differential characteristics $(\Delta P \rightarrow \Delta C)$ in the cipher. 
+
+\vspace{2mm}
+\pause Note: This is a chosen plaintext attack.
+
+\vspace{5mm}
+\pause We have to analyze the cipher in pieces. \pause The basic idea is
+\begin{itemize}[<+->]
 \item{Analyze the difference pattern and their probabilities of the S-Box}
 \item{Combine the S-Boxes over the rounds to build the differential characteristic of the cipher}
 \item{Choose the characteristic with maximum probability and use that to retrieve subkey bits of the cipher}
@@ -580,8 +623,8 @@ Let us consider the S-Box of the SPN cipher as we constructed it:
 \end{columns}
 
 \vspace{2mm}
-Algorithm
-\begin{enumerate}
+\pause Algorithm
+\begin{enumerate}[<+->]
 \item{Fix a certain input difference $\Delta X = 0100$, say}
 \item{Iterate through the first input $X = \{0000, ... ,1111 \}$}
 \item{This fixes the second input $X' = X \oplus \Delta X = \{0100, ... ,1011\}$ (ordering does not matter)}
@@ -597,10 +640,10 @@ Sample Difference Pairs for the S-Box
 \includegraphics[totalheight=0.6\textheight]{spn_sbox_diffpairs.jpg}
 \end{figure}
 
-Note that, for $\Delta X = 1011$, $\Delta Y = 0010$ occurs $8$ times, out of the possible $16$ times. So, the pair $(1011,0010)$ has a probability of occurrence $8/16 = 1/2$. 
+\pause Note that, for $\Delta X = 1011$, $\Delta Y = 0010$ occurs $8$ times, out of the possible $16$ times. So, the pair $(1011,0010)$ has a probability of occurrence $8/16 = 1/2$. 
 
 \vspace{2mm}
-We can tabulate the complete data for the S-Box to check this probabilities.
+\pause We can tabulate the complete data for the S-Box to check this probabilities.
 \end{frame}
 
 \begin{frame}
@@ -610,8 +653,8 @@ Difference Distribution Table
 \includegraphics[totalheight=0.6\textheight]{spn_sbox_disttable.jpg}
 \end{figure}
 
-Note that
-\begin{itemize}
+\pause Note that
+\begin{itemize}[<+->]
 \item{In an ideal S-Box, we would like all entries to be $1$}
 \item{But this table clearly shows bias towards certain pairs}
 \item{Just divide the entries by $2^4 = 16$ to get the probabilities, and exploit the scenario of highest probability of occurrence ($Pr(2|B) = 8/16 = 1/2$ here)}
@@ -622,24 +665,25 @@ Note that
 A few properties of the S-Box Distribution Table
 
 \vspace{5mm}
-Notice that in the difference table
-\begin{itemize}
+\pause Notice that in the difference table
+\begin{itemize}[<+->]
 \item{The $(0,0)$ entry is $16$, just because identical inputs ($\Delta X = 0 \Rightarrow X = X'$) should produce identical outputs ($Y = Y' \Rightarrow \Delta Y = 0$)}
 \item{All the entries are even, because $\Delta X$ is the same for both the input pairs $(X,X')$ and $(X',X)$, producing same $\Delta Y$}
 \item{Sum of all entries in a row is $2^4 = 16$}
 \end{itemize}
 
 \vspace{5mm}
-As an ideal S-Box expects to give out no information of $\Delta Y$ given $\Delta X$, we wish it could have all entries $1$, i.e,
+\pause As an ideal S-Box expects to give out no information of $\Delta Y$ given $\Delta X$, we wish it could have all entries $1$, i.e,
 \[ Pr(\Delta Y | \Delta X) = \frac{1}{16} \quad \forall \: \Delta X  \]
-But, from our discussion above, this is infeasible, and we hope to exploit this.
+\pause But, from our discussion above, this is infeasible, and we hope to exploit this.
 \end{frame}
 
 \begin{frame}
 What happens for a Keyed S-Box?
 
 \vspace{5mm}
-Let us consider the S-Box of the SPN cipher, with the round keys this time.
+\pause Let us consider the S-Box of the SPN cipher, with the round keys this time.
+\pause
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{itemize}
@@ -658,29 +702,35 @@ Let us consider the S-Box of the SPN cipher, with the round keys this time.
 \end{columns}
 
 \vspace{5mm}
-Note that for each pair of inputs $(W,W')$, the actual inputs to the S-Box are $(X,X') = (W \oplus K, W' \oplus K)$. Hence, the input difference for the keyed S-Box is 
+\pause Note that for each pair of inputs $(W,W')$, the actual inputs to the S-Box are $(X,X') = (W \oplus K, W' \oplus K)$. Hence, the input difference for the keyed S-Box is 
 \[ \Delta W = W \oplus W' = (X \oplus K) \oplus (X' \oplus K) = X \oplus X' = \Delta X \]
-and hence $\Delta W \rightarrow \Delta Y$ corresponds identically to $\Delta X \rightarrow \Delta Y$.
+\pause and hence $\Delta W \rightarrow \Delta Y$ corresponds identically to $\Delta X \rightarrow \Delta Y$.
 
 \vspace{2mm}
-Thus, the keyed S-Box has the same difference distribution table.
+\pause Thus, the keyed S-Box has the same difference distribution table.
 \end{frame}
 
 \begin{frame}
 
 \begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.8\textheight]{spn_diff_char.jpg}
+\end{figure}
+\end{column}
+
 \begin{column}{0.6\textwidth}
 Constructing a Differential Characteristic
 
 \vspace{5mm}
-The diagram beside illustrates the tracing of the non-zero bits of the input difference through the SPN structure.
+\pause The diagram beside illustrates the tracing of the non-zero bits of the input difference through the SPN structure.
 
 \vspace{2mm}
-Input Diff: $\Delta P = 0B00$ \\
+Input Difference: $\Delta P = 0B00$
 
 \vspace{2mm}
-Propagating Difference Pairs
-\begin{itemize}
+\pause Propagating Difference Pairs
+\begin{itemize}[<+->]
 \item{$S_{12}$: $1011 \rightarrow 0010$ [$Pr = \frac{8}{16}$]}
 \item{$S_{23}$: $0100 \rightarrow 0110$ [$Pr = \frac{6}{16}$]}
 \item{$S_{32}$: $0010 \rightarrow 0101$ [$Pr = \frac{6}{16}$]}
@@ -689,13 +739,8 @@ Propagating Difference Pairs
 \end{itemize}
 
 \vspace{2mm}
-Differential Characteristic
+\pause Differential Characteristic
 \[ 0B00 \rightarrow 0040 \rightarrow 0220 \rightarrow 0606 \]
-\end{column}
-\begin{column}{0.4\textwidth}
-\begin{figure}
-\includegraphics[totalheight=0.8\textheight]{spn_diff_char.jpg}
-\end{figure}
 \end{column}
 \end{columns}
 \end{frame}
@@ -704,7 +749,7 @@ Differential Characteristic
 Piling up Probabilities
 
 \vspace{2mm}
-Notation
+\pause Notation
 \begin{itemize}
 \item{$\Delta U_i$: Input difference to $i$-th round}
 \item{$\Delta V_i$: Output difference from $i$-th round}
@@ -713,8 +758,8 @@ Notation
 \end{itemize}
 
 \vspace{2mm}
-Here, we have the following in the differential characteristic
-\begin{itemize}
+\pause Here, we have the following in the differential characteristic
+\begin{itemize}[<+->]
 \item{Round 1: $\Delta P = \Delta U_1 = 0B00 \rightarrow 0040 = \Delta V_1$  [$Pr = 8/16$]}
 \item{Round 2: $\Delta V_1 = \Delta U_2 = 0040 \rightarrow 0220 = \Delta V_2$  [$Pr = 6/16$]}
 \item{Round 3: $\Delta V_2 = \Delta U_3 = 0220 \rightarrow 0606 = \Delta V_3$  [$Pr = \left(6/16\right)^2$]}
@@ -722,18 +767,18 @@ Here, we have the following in the differential characteristic
 \end{itemize}
 
 \vspace{2mm}
-Hence, assuming the S-Boxes to be independent over the rounds, we obtain
+\pause Hence, assuming the S-Boxes to be independent over the rounds, we obtain
 \[ \Delta P = 0B00 \rightarrow 0606 = \Delta U_4 \]
 with probability $Pr(\Delta U_4 | \Delta P) = 8/16 \times 6/16 \times \left(6/16\right)^2 = 27/1024$.
 
 \vspace{2mm}
-Note: The probability of this characteristic $Pr = 27/1024 \gg 1/2^{16}$
+\pause Note: The probability of this characteristic $Pr = 27/1024 \gg 1/2^{16}$
 
 \end{frame}
 
 \begin{frame}
 Attack Idea
-\begin{itemize}
+\begin{itemize}[<+->]
 \item{We have a differential characteristic that links plaintext difference $\Delta P$ to input difference $\Delta U_4$ of the 4th round output of SPN and holds with high probability ($27/1024$)}
 \item{We can partially undo the last round by guessing the last key $K_5$}
 \item{If we guess correctly, the differential characteristic will hold with high probability, close to $27/1024$. If we guess wrong, it will hold with low probability}
@@ -747,28 +792,28 @@ Attack Idea
 
 \begin{frame}
 \begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.8\textheight]{spn_diff_char.jpg}
+\end{figure}
+\end{column}
+
 \begin{column}{0.6\textwidth}
 Differential Characteristic flow
 
 \vspace{5mm}
-Input Diff: $\Delta P = 0B00$ 
+\pause Input Difference: $\Delta P = 0B00$ 
 
 \vspace{2mm}
-Characteristic
+\pause Characteristic
 \[ \Delta P = 0B00 \rightarrow 0606 = \Delta U_4 \]
 
 \vspace{2mm}
 Probability $Pr(\Delta U_4 = 0606 | \Delta P = 0B00) = 27/1024$
 
 \vspace{5mm}
-Partial Subkey guess only for
+\pause Partial Subkey guess only for
 \[ [K_{5,5} ... K_{5,8}, K_{5,13} ... K_{5,16}] \]
-\end{column}
-
-\begin{column}{0.4\textwidth}
-\begin{figure}
-\includegraphics[totalheight=0.8\textheight]{spn_diff_char.jpg}
-\end{figure}
 \end{column}
 \end{columns}
 
@@ -807,7 +852,7 @@ The first step, as before, is to come up with a linear approximation for the S-B
 \vspace{5mm}
 Note that the S-Boxes here are 6-bit to 4-bit maps. We can use the same technique as before. For a given S-Box $a \in \{1, 2, \dots 8\}$, $1 \leq \alpha \leq 63$, $1 \leq \beta \leq 15$, we define $NS_{a}(\alpha, \beta)$ as the number of times (out of 64) for S-Box $a$ that for all the input patterns masked by $\alpha$ the output pattern masked by $\beta$ agrees with the value of S-Box $a$.
 \[ NS_{a}(\alpha, \beta) = | \{ X | 0 \leq X < 64, ( \bigoplus_{i=0}^5 X[i]\cdot\alpha[i]) = (\bigoplus_{j=0}^3 S_a(X)[j] \cdot \beta[j])\} | \]
-This looks more complicated, but is infact the same expression as for SPN, except it takes into account all possible S-Boxes.
+This looks more complicated, but is in fact the same expression as for SPN, except it takes into account all possible S-Boxes.
 \end{frame}
 
 \begin{frame}
@@ -846,7 +891,7 @@ This is the best expression for the 3-round DES.
 \end{frame}
 
 \begin{frame}
-We perform the attack on the 4-round DES similiarly to how we performed the attack on 4-round SPN, by "undoing" the last round.\\
+We perform the attack on the 4-round DES similarly to how we performed the attack on 4-round SPN, by ``undoing'' the last round.\\
 \vspace{5mm}
 \pause
 Note that in the last round, $U_{4L}$ bits are not changed, only $U_{4R}$ bits are affected. Note also that there is only one $U_R$ bit the 3-round equation.
@@ -871,7 +916,7 @@ Then if $q^{(i)}$'s are independent, the success rate of the attack is
 \[ \int_{x=-2\sqrt{N}\epsilon}^\infty \left( \prod_{K_n^{(i)} \neq K_n} \int_{-x-4\sqrt{N}\epsilon q^{(i)}}^{x+4\sqrt{N}\epsilon (1 - q^{(i)})} \frac{1}{\sqrt{2\pi}} e^{-y^2/2} dy \right) \frac{1}{\sqrt{2\pi}} e^{-x^2/2} dx \]
 Where the product is taken over all subkey candidates except $K_n$.\\
 \vspace{3mm}
-Let $d = 1$ and $l_1 = 17$ in the above expression - this corresponds to our attack (distribution over guessing for one bit, $CR_{17}$ in the equation). The following table summarizes the sucess rates:
+Let $d = 1$ and $l_1 = 17$ in the above expression - this corresponds to our attack (distribution over guessing for one bit, $CR_{17}$ in the equation). The following table summarizes the success rates:
 \begin{center}
 \begin{tabular}{|c|r|r|r|r|}
 \hline
@@ -887,7 +932,7 @@ Success Rate & 0.486 & 0.785 & 0.967 & 0.999 \\
 How many pairs do we need? (Continued)
 
 \vspace{3mm}
-Using the calculation from the previous slide, we see that for a 4-round DES, our equation holds with bias of about 1 in 4. Thus we will need about $16\times 4^2 = 256$ pairs for the attack to have near perfect chance of sucess.\\
+Using the calculation from the previous slide, we see that for a 4-round DES, our equation holds with bias of about 1 in 4. Thus we will need about $16\times 4^2 = 256$ pairs for the attack to have near perfect chance of success.\\
 \vspace{3mm}
 For a full 16-round DES, the best approximation has bias $\sim 1.19\times 10^{-22}$, thus we would need on the order of $2^{47}$ plaintext-ciphertext pairs.
 \end{frame}
@@ -907,7 +952,7 @@ Similar to the differential attack on SPN, here we care about the differential c
 \item{Construct the difference tables for the S-Boxes}
 \item{Find the most probable difference pairs}
 \item{Combine the pairs through all the rounds to get a highly probable differential characteristic until the penultimate round}
-\item{Exploit this differential characteristic by chosing a number of pairs of plaintexts with the desired difference and undo the last round by guessing the keybits}
+\item{Exploit this differential characteristic by choosing a number of pairs of plaintexts with the desired difference and undo the last round by guessing the keybits}
 \item{If the initial choice of the input difference was smart, we will only need to guess a few keybits}
 \item{The guess approving the differential characteristic with highest probability is correct}
 \end{itemize}
@@ -956,7 +1001,7 @@ Did we miss anything important?
 
 \subsection{Independence of S-Boxes}
 \begin{frame}
-Note that throughout this discussion we have assumed that the S-Boxes were independant. This allowed us to use the Piling Up Principle to combine linear approximations of S-Boxes across rounds. \\
+Note that throughout this discussion we have assumed that the S-Boxes were independent. This allowed us to use the Piling Up Principle to combine linear approximations of S-Boxes across rounds. \\
 \vspace{3mm}
 This assumption worked well for us in practice, but is not necessarily true. We could have proceeded differently without this assumption - [see John Manferdelli's Boolean Functions slides]
 \end{frame}
