@@ -304,7 +304,7 @@ And the following 16-bit permutation:
 \end{figure}
 
 \vspace{5mm}
-\pause The S-Box provides the {\it confusion} function and the permutation applies the {\it confusion} operation in SPN, thus making it cryptographically similar to DES.
+\pause The S-Box provides the {\it confusion} function and the permutation applies the {\it diffusion} operation in SPN, thus making it cryptographically similar to DES.
 \vspace{5mm}
 
 \end{frame}
@@ -858,10 +858,9 @@ This looks more complicated, but is in fact the same expression as for SPN, exce
 \begin{frame}
 Using $NS$ to find a linear approximation for the S-Boxes.\\
 \vspace{5mm}
-With 6-bit S-Boxes things are not as easy as with 4-bit S-Boxes.
 \begin{figure}
-\includegraphics[totalheight=0.5\textheight]{NS_S5.PNG}
-\caption{Bias for S-Box 5 }
+\includegraphics[totalheight=0.7\textheight]{NS_S5.PNG}
+\caption{$NS_5(\alpha, \beta) - 32$}
 \end{figure}
 It turns out that the highest bias is for S-Box 5 with $\alpha = 16$ and $\beta = 15$
 \end{frame}
