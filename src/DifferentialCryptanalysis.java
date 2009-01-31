@@ -208,9 +208,10 @@ public class DifferentialCryptanalysis {
 		    	BitSet delta_U4R = Util.copyBitSet(C1R_prev, 32);
 		        delta_U4R.xor(C2R_prev);
 		        
-		        BitSet check = Util.toBitSet(0x00008002,32);
+		        BitSet check = Util.toBitSet(0x00008000,32);
 		    	BitSet bits = delta_U4R.get(0,32);
-		        boolean lhs = Util.equalsBitSet(bits, check, 32);
+		    	System.out.print(Util.toInteger(bits, 32));
+		        boolean lhs = delta_U4R.get(16); //Util.equalsBitSet(bits, check, 32);
 	            
 	            if (lhs == true) counts[i]++;	     
 		    }
