@@ -135,4 +135,42 @@ public final class Util {
     }
     return a;
   }
+
+  /**
+   * Concatenate an array of bit sets of equal length
+   * 
+   * @param sets
+   *          Array of sets to concatenate
+   * @param totalBitsEach
+   *          number of bits in each bit set to concatenate
+   * @return A single bit set with concatenated bits
+   */
+  public static BitSet concatenate(BitSet[] sets, int totalBitsEach) {
+    BitSet result = new BitSet(sets.length * totalBitsEach);
+    for (int i = 0; i < sets.length; i++) {
+      for (int j = 0; j < totalBitsEach; j++) {
+        result.set((i * totalBitsEach) + j, sets[i].get(j));
+      }
+    }
+    return result;
+  }
+  
+  /**
+   * Print a bit set to the screen
+   * @param set
+   * @param totalBits
+   */
+  public static void printBitSet(BitSet set, int totalBits) {
+    int ptr = 0;
+    while (ptr < totalBits) {
+      int val = Util.toInteger(set.get(ptr, ptr + 4), 4);
+      System.out.print(Integer.toHexString(val).toUpperCase());
+      //System.out.print(set.get(ptr) ? "1" : "0");
+//      if (++ptr % lineLength == 0) {
+//        System.out.println();
+//      }
+      ptr += 4;
+    }
+    System.out.println();
+  }
 }
