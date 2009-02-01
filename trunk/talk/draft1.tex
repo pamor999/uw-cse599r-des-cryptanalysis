@@ -357,7 +357,7 @@ S-Box Approximation Example
 \begin{columns}
 \begin{column}{0.3\textwidth}
 \begin{figure}
-\includegraphics[width=0.7\textwidth]{spn_sbox_unkeyed.jpg}
+\includegraphics[width=0.7\textwidth]{spn_sbox_X23_Y134.PNG}
 \end{figure}
 \end{column}
 
@@ -397,7 +397,7 @@ Note, from the previous table, that the expression \[ X_1 \oplus X_3 \oplus X_4 
 \end{column}
 \begin{column}{0.6\textwidth}
 \begin{figure}
-\includegraphics[height=0.45\textheight]{spn_single_round.jpg}
+\includegraphics[height=0.45\textheight]{spn_round_expand.PNG}
 \end{figure}
 \end{column}
 \end{columns}
@@ -574,7 +574,7 @@ Probabilistic justification for number of pairs:\\
 \end{frame}
 
 \begin{frame}
-Actual attack on SPN ... Demo ...
+DEMO: Attack on 4-round SPN
 \end{frame}
 
 \subsection{Differential Attack on SPN}
@@ -820,7 +820,7 @@ Probability $Pr(\Delta U_4 = 0606 | \Delta P = 0B00) = 27/1024$
 \end{frame}
 
 \begin{frame}
-Actual attack on SPN ... Demo ...
+DEMO: Attack on 4-round SPN
 \end{frame}
 
 \begin{frame}
@@ -958,7 +958,7 @@ Using the calculation from the previous slide, we see that for a 4-round DES, ou
 \end{frame}
 
 \begin{frame}
-The actual Attack on 4 round DES ... Demo ...
+DEMO: Attack on 4-round DES
 \end{frame}
 
 
@@ -1070,7 +1070,7 @@ How many pairs do we need? (Probabilistic justification)
 \end{frame}
 
 \begin{frame}
-The actual Attack on 4 round DES ... Demo ...
+DEMO: Attack on 4-round DES
 \end{frame}
 
 
@@ -1095,8 +1095,12 @@ What if that is false ? ... Discussion ...
 
 \subsection{Links between the Attacks}
 \begin{frame}
-Links between Linear and Differential Attacks ...
-
+Linear Resistance:\\
+\vspace{5mm}
+Thm: A function $F: GF(2)^p \rightarrow GF(2)^q$is perfect nonlinear (ie bias is 0) if and only if it is \textit{bent}. \\
+\vspace{3mm}
+Thm: Bent functions exist only for $p \geq 2q$ and $p$ even. 
+\vspace{5mm}
 \end{frame}
 
 \begin{frame}
@@ -1117,14 +1121,29 @@ If you are mounting the attacks ... To Do / Not To Do ...
 \end{frame}
 
 \begin{frame}
-If you are building a cryptosystem ... To Do / Not To Do ...
-
+The problems of DES originated in two aspects:
+\begin{itemize}
+\item{6 bit S-Boxes are too easy to identify with linear or affine functions with high bias}
+\item{Diffusion between rounds is just not fast enough}
+\end{itemize}
+AES, which replaced DES, provides an 8-Bit S-Box in the SubBytes step and higher diffusion through the ShiftRows and MixColumns steps. 
 \end{frame}
 
 \begin{frame}
-Questions ... Doubts ... Coding ... Misc ... Discussion ...
-
+References:\\
+\vspace{5mm}
+Matsui\\
+Beham, Shamir\\
+Heys
+Chabaud, Vaudenay\\
+Manferdelli
 \end{frame}
 
+\begin{frame}
+\begin{center}
+The End.\\
+Questions?
+\end{center}
+\end{frame}
 
 \end{document}
