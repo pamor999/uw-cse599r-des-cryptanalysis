@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -16,9 +17,9 @@ public class LinearCryptanalysis {
    * @param args
    */
   public static void main(String[] args) {
-    DesLinearAttack4Round();
+    //DesLinearAttack4Round();
     // PrintNSForAll();
-    // MatsuiEqn5Distribution();
+    MatsuiEqn5Distribution();
     // testFinalRound();
   }
 
@@ -182,8 +183,8 @@ public class LinearCryptanalysis {
     BitSet Fguess = des.PermuteCInv(des.Feistel(CR, Kguess));
 
     System.out.println("F, and F guess");
-    printBitSet(F, 32, 32);
-    printBitSet(Fguess, 32, 32);
+    Util.printBitSet(F, 32);
+    Util.printBitSet(Fguess, 32);
 
     // now a slightly more involved test - we encrypt
     // a block with 4 rounds, then invert the last round
@@ -225,21 +226,21 @@ public class LinearCryptanalysis {
     BitSet C4R = C4.get(32, 64);
 
     System.out.println("Ls");
-    printBitSet(C3L, 32, 32);
-    printBitSet(C4L, 32, 32);
+    Util.printBitSet(C3L, 32);
+    Util.printBitSet(C4L, 32);
     System.out.println("Rs");
-    printBitSet(C3R, 32, 32);
-    printBitSet(C4R, 32, 32);
+    Util.printBitSet(C3R, 32);
+    Util.printBitSet(C4R, 32);
 
     // undo the last round
     C4L.xor(des.Feistel(C4R, K4));
     // undone L of 4th round will be R of 3-round DES
     System.out.println("Ls");
-    printBitSet(C3L, 32, 32);
-    printBitSet(C4R, 32, 32);
+    Util.printBitSet(C3L, 32);
+    Util.printBitSet(C4R, 32);
     System.out.println("Rs");
-    printBitSet(C3R, 32, 32);
-    printBitSet(C4L, 32, 32);
+    Util.printBitSet(C3R, 32);
+    Util.printBitSet(C4L, 32);
   }
 
   /**
@@ -260,14 +261,12 @@ public class LinearCryptanalysis {
     DesImpl des = new DesImpl();
     List<BitSet[]> sets = new ArrayList<BitSet[]>();
     for (int i = 0; i < pairs; i++) {
-      // four bloks of 16 bits each
-      BitSet p1 = Util.toBitSet(r.nextInt(65536), 16);
-      BitSet p2 = Util.toBitSet(r.nextInt(65536), 16);
-      BitSet p3 = Util.toBitSet(r.nextInt(65536), 16);
-      BitSet p4 = Util.toBitSet(r.nextInt(65536), 16);
-      BitSet p12 = Util.concatenate(p1, 16, p2, 16);
-      BitSet p34 = Util.concatenate(p3, 16, p4, 16);
-      BitSet p = Util.concatenate(p12, 32, p34, 32);
+      // four bloks of 16 bits each -> 1 64 bit block
+      BitSet p = Util.concatenate(new BitSet[] {
+          Util.toBitSet(r.nextInt(65536), 16),
+          Util.toBitSet(r.nextInt(65536), 16),
+          Util.toBitSet(r.nextInt(65536), 16),
+          Util.toBitSet(r.nextInt(65536), 16) }, 16);
 
       BitSet c = des.DesEncBlock(p, key, numRounds);
       sets.add(new BitSet[] { p, c });
@@ -283,21 +282,28 @@ public class LinearCryptanalysis {
     int numRounds = 4;
 
     // set the key
-    BitSet key1 = Util.toBitSet(0x1234, 16);
-    BitSet key2 = Util.toBitSet(0x8743, 16);
-    BitSet key3 = Util.toBitSet(0xFAC3, 16);
-    BitSet key4 = Util.toBitSet(0xECAB, 16);
-    BitSet key12 = Util.concatenate(key1, 16, key2, 16);
-    BitSet key34 = Util.concatenate(key3, 16, key4, 16);
-    BitSet key = Util.concatenate(key12, 32, key34, 32);
+    BitSet key = Util.concatenate(new BitSet[] { Util.toBitSet(0x1234, 16),
+        Util.toBitSet(0x8743, 16), Util.toBitSet(0xFAC3, 16),
+        Util.toBitSet(0xECAB, 16) }, 16);
 
-    // print the actual key bits
     DesImpl des = new DesImpl();
     BitSet K4 = des.KeySchedule(key, 4);
 
+    // print info about the real key
+    System.out.println("****************");
+    System.out.println("Using Key:");
+    Util.printBitSet(key, 64);
+    System.out.println("****************");
     BitSet K4_S1 = K4.get(0, 6);
-    System.out.println("actual partial subkey is "
-        + Integer.toHexString(Util.toInteger(K4_S1, 6)));
+    System.out.println("Actual Partial Subkey:" +
+        Integer.toHexString(Util.toInteger(K4_S1, 6)).toUpperCase());
+    System.out.println("****************");
+    System.out.println("Press Enter to start...");
+    try {
+      System.in.read();
+    } catch(IOException exn) {
+      
+    }
 
     // generate the pairs
     int numPairs = 1000;
@@ -315,40 +321,47 @@ public class LinearCryptanalysis {
         System.out.print(((int) (count / ((double) numPairs) * 100)) + "%\n");
       }
 
+      // Matsui notation
       BitSet PH = pair[0].get(0, 32);
       BitSet PL = pair[0].get(32, 64);
       BitSet CH = pair[1].get(0, 32); // L
       BitSet CL = pair[1].get(32, 64); // R
 
       for (int i = 0; i < 64; i++) {
-        // guess the key for Sbox 1 - we guess for S-Box 1
-        // because it is the only sbox affecting CL[15] in the
-        // expression for a 3-round DES.
+        /*
+         * Guess the key for Sbox 1 - we guess for S-Box 1 because it is the
+         * only sbox affecting CL[15] in the expression for a 3-round DES.
+         */
         BitSet partialSubkeyGuess = Util.toBitSet(i, 6);
         // pad it
         BitSet subKeyGuess = Util.concatenate(partialSubkeyGuess, 6, Util
-            .toBitSet(0, 24), 24);
-        subKeyGuess = Util.concatenate(subKeyGuess, 30, Util.toBitSet(0, 18),
-            18);
+            .toBitSet(0, 42), 42);
 
-        // now invert the final round with it
+        /*
+         * Invert the last round with the key guess
+         */
         BitSet CH_prev = Util.copyBitSet(CH, 32);
         BitSet CL_prev = Util.copyBitSet(CL, 32);
-
+        // compute the feustel and XOR it out
         CH_prev.xor(des.Feistel(CL_prev, subKeyGuess));
         // swap the result to undo the last Tau
         BitSet temp = CH_prev;
         CH_prev = CL_prev;
         CL_prev = temp;
 
-        // compute the 3-round expression:
-        // PH[7,18,25,29] + CH[7,18,24,29] + PL[15] + CL[15] = K1[22] + K3[22]
-        // (=0)
+        /*
+         * Compute the 3-round expression: 
+         * PH[7,18,25,29] + CH[7,18,24,29] + 
+         * PL[15] + CL[15] = K1[22] + K3[22] (=0)
+         */
         boolean lhs = PH.get(31 - 7) ^ PH.get(31 - 18) ^ PH.get(31 - 24)
             ^ PH.get(31 - 29) ^ CH_prev.get(31 - 7) ^ CH_prev.get(31 - 18)
             ^ CH_prev.get(31 - 24) ^ CH_prev.get(31 - 29) ^ PL.get(31 - 15)
             ^ CL_prev.get(31 - 15);
 
+        /*
+         * Record if its false for the given key guess
+         */
         if (lhs == false)
           counts[i]++;
       }
@@ -380,17 +393,8 @@ public class LinearCryptanalysis {
     System.out.println();
     System.out.println();
     System.out.println("Best candidate partial subkey is "
-        + Integer.toHexString(maxi) + " with bias " + maxbias);
+        + Integer.toHexString(maxi).toUpperCase() 
+        + " with bias " + maxbias);
 
-  }
-
-  public static void printBitSet(BitSet set, int lineLength, int setLength) {
-    int ptr = 0;
-    while (ptr < setLength) {
-      System.out.print(set.get(ptr) ? "1" : "0");
-      if (++ptr % lineLength == 0) {
-        System.out.println();
-      }
-    }
   }
 }
