@@ -290,7 +290,7 @@ public class LinearCryptanalysis {
     BitSet K4 = des.KeySchedule(key, 4);
 
     
-    int numPairs = 1000;
+    int numPairs = 10000;
     
     // print info 
     System.out.println("4-round DES Linear Cryptanalysis.");
