@@ -1063,7 +1063,7 @@ So, just guess the {\it target partial subkey} for $S_2, ... S_8$ individually, 
 \begin{frame}
 Probabilistic Analysis
 
-\vspace{5mm}
+\vspace{3mm}
 Constructing the Difference Distribution tables for the S-Boxes and analyzing the probability distribution for differential propagation through SBoxes:
 
 \vspace{2mm}
@@ -1085,6 +1085,7 @@ Constructing the Difference Distribution tables for the S-Boxes and analyzing th
 \item{Approximately $2^4 = 16$ for $100\%$ success}
 \end{itemize}
 
+\pause For 16 round DES, $2^{47}$ pairs are needed. [$2^{36}$ ``good pairs'']
 \end{frame}
 
 \begin{frame}
@@ -1099,51 +1100,131 @@ Concluding Remarks
 \end{beamercolorbox}
 \end{frame}
 
-\subsection{Independence of S-Boxes}
+\subsection{A few important points}
 \begin{frame}
-Note that throughout this discussion we have assumed that the S-Boxes were independent. This allowed us to use the Piling Up Principle to combine linear approximations of S-Boxes across rounds. \\
+Independence of S-Boxes
+
+\vspace{5mm}
+\pause Note that throughout this discussion we have assumed that the S-Boxes were independent. This allowed us to use the Piling Up Principle to combine linear approximations of S-Boxes across rounds.
+
 \vspace{3mm}
-This assumption worked well for us in practice, but is not necessarily true. We could have proceeded differently without this assumption - [see John Manferdelli's Boolean Functions slides]
+\pause This assumption worked well for us in practice, but is not necessarily true. We could have proceeded differently without this assumption - [see John Manferdelli's Boolean Functions slides]
 \end{frame}
 
-\subsection{Links between the Attacks}
 \begin{frame}
-Linear Resistance:\\
-\vspace{3mm}
+Linear Resistance
+
+\vspace{5mm}
 Let $F: GF(2)^p \rightarrow GF(2)^q$.\\
 \vspace{3mm}
-Defn: A function F is bent if its Walsh transform $\mathcal{W}\{F\}$ is $\pm 2^{p/2}$.\\
+\pause Defn: A function F is bent if its Walsh transform $\mathcal{W}\{F\}$ is $\pm 2^{p/2}$.\\
 \vspace{3mm}
-Thm: A function F is perfect nonlinear (ie bias is 0) if and only if it is \textit{bent}. \\
+\pause Thm: A function F is perfect nonlinear (ie bias is 0) if and only if it is \textit{bent}. \\
 \vspace{3mm}
-Thm: Bent functions exist only for $p \geq 2q$ and $p$ even. \\
+\pause Thm: Bent functions exist only for $p \geq 2q$ and $p$ even. \\
 \vspace{5mm}
-To sumarize: When $p\geq 2q$ and $p$ even, differential-resistant is equivalent to linear resistant, and to vectorial Bentness.
+\pause To sumarize: When $p\geq 2q$ and $p$ even, differential-resistant is equivalent to linear resistant, and to vectorial Bentness.
 \end{frame}
 
 \subsection{Take Home}
 \begin{frame}
 \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
-`Take Home'
+`Moral of the story'
 \end{beamercolorbox}
 \end{frame}
 
 \begin{frame}
-If you are mounting the attacks ... To Do / Not To Do ...
+If you are mounting the attacks, remember the following:
+
+\vspace{5mm}
+\pause
+\begin{itemize}[<+->]
+\item{Analyze the main non-linear component, S-Boxes for example}
+\item{For linear attack, try to find the linear/affine approximation}
+\item{For differential attack, find the best characteristic}
+\item{Combine through levels to get the total approximation/characteristic}
+\item{Analyze piling up probabilities to estimate number of required pairs}
+\item{Verify if this is better than any other existing attack}
+\end{itemize}
 
 \end{frame}
 
 \begin{frame}
-The problems of DES originated in two aspects:
-\begin{itemize}
+If you are designing a block cipher, note:
+
+\vspace{5mm}
+\pause The problems of DES originated in two aspects
+\begin{itemize}[<+->]
 \item{6 bit S-Boxes are too easy to identify with linear or affine functions with high bias}
 \item{Diffusion between rounds is just not fast enough}
 \end{itemize}
-AES, which replaced DES, provides an 8-Bit S-Box in the SubBytes step and higher diffusion through the ShiftRows and MixColumns steps. 
+
+\vspace{2mm}
+\pause Prescription
+\begin{itemize}[<+->]
+\item{Create S-Boxes as bent functions [inefficient as $p \geq 2q$]}
+\item{Make the diffusion step faster to create an avalanche}
+\end{itemize}
+
+\vspace{3mm}
+\pause AES, which replaced DES, provides an 8-Bit S-Box in the SubBytes step and higher diffusion through the ShiftRows and MixColumns steps. 
+\end{frame}
+
+
+\subsection{Fun facts}
+\begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+Just for Fun!
+\end{beamercolorbox}
 \end{frame}
 
 \begin{frame}
-Matsui rearrangement of S-Boxes ... Construction of S-Boxes ... IBM knew Diff 17 years earlier ... $10^44$ is closer to $10$ than to $10^45$ ...
+What if you play around with the S-Box ordering?
+
+\vspace{5mm}
+\pause
+\begin{itemize}[<+->]
+\item{Matsui prescribed a rearrangement of S-Boxes specifically against linear attack.}
+\item{Matsui prescribed another rearrangement of the S-Boxes, which is good enough to prevent both linear and differential attacks.}
+\item{Biham and Shamir illustrated a rearrangement where differential attack becomes way more efficient.}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\includegraphics[width=0.6\textwidth]{ibm.jpg}
+\end{figure}
+
+\pause
+S-Box Design criteria
+\begin{itemize}[<+->]
+\item{1 bit input difference produces 2 bits output difference}
+\item{Minimize the difference between the numbers of 1's and 0's when any input bit is held constant}
+\item{$S(X) \neq S(X \oplus 11ab00)$} 
+\end{itemize}
+
+\vspace{2mm}
+\pause Other good stuff
+\begin{itemize}[<+->]
+\item{2 input difference bits mapped to 3 by $E(R)$}
+\item{Each output difference bit permuted to 1 each to S-boxes of next round}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\begin{figure}
+\includegraphics[totalheight=0.7\textheight]{coppersmith.jpg}
+\end{figure}
+\pause
+\centerline{Average of $10$ and $10^{45}$ is $5.10^{44} + 5 > 10^{44} \approx 2^{47}$}
+\pause
+\begin{figure}
+\includegraphics[width=0.7\textwidth]{eli.jpg}
+\end{figure}
+\hfill - Eli Biham
 \end{frame}
 
 \begin{frame}
@@ -1161,10 +1242,15 @@ J. Manferdelli, UW Cryptography Lecture Notes
 \end{frame}
 
 \begin{frame}
-\begin{center}
-The End.\\
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
+The End.
+\end{beamercolorbox}
+\end{frame}
+
+\begin{frame}
+\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,center,rounded=true,shadow=true]{author in head/foot}
 Questions?
-\end{center}
+\end{beamercolorbox}
 \end{frame}
 
 \end{document}
