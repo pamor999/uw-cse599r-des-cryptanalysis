@@ -1081,11 +1081,10 @@ Constructing the Difference Distribution tables for the S-Boxes and analyzing th
 \vspace{2mm}
 \pause
 \begin{itemize}[<+->]
-\item{How many pairs do we need?}
-\item{Approximately $2^4 = 16$ for $100\%$ success}
+\item{Question: How many pairs do we need?}
+\item{Answer: $N \approx c/p_D$ where $p_D$ is the probability of the differential characteristic, and $c > 0$ is a constant}
 \end{itemize}
-
-\pause For 16 round DES, $2^{47}$ pairs are needed. [$2^{36}$ ``good pairs'']
+\pause I used $2^4 = 16$ pairs for $100\%$ success in this case. For 16 round DES, $2^{47}$ pairs are needed, out of which $2^{36}$ are ``good pairs''.
 \end{frame}
 
 \begin{frame}
