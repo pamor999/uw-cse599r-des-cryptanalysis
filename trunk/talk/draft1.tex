@@ -910,19 +910,34 @@ Let $P_L$ and $P_R$ be the left and right plaintext bits. Let $C_L$ and $C_R$ be
 \end{frame}
 
 \begin{frame}
+\begin{columns}
+
+\begin{column}{0.35\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.8\textheight]{DES_4.PNG}
+\end{figure}
+\end{column}
+
+\begin{column}{0.65\textwidth}
+\small
 We perform the attack on the 4-round DES similarly to how we performed the attack on 4-round SPN, by ``undoing'' the last round.\\
-\vspace{5mm}
+\vspace{3mm}
 \pause
-Note that in the last round, $U_{4R}$ bits are not changed, only $U_{4L}$ bits are affected. Note also that there is only one $U_{4L}$ bit the 3-round equation.
+Note that in the last round, $U_{4R}$ bits are not changed, only $U_{4L}$ bits are affected. Note also that there is only one $U_{4L}$ bit the 3-round equation.\\
 \begin{align*} 
-P_L[25] \oplus P_L[14] \oplus P_L[8] \oplus & P_L[3] \oplus U_{4R}[25] \oplus U_{4R}[14] \oplus U_{4R}[8] \\ & \oplus U_{4R}[3] \oplus P_R[17] \oplus U_{4L}[17] = K_1[26] \oplus K_3[26]
-\end{align*}
-\vspace{5mm}
+& P_L[25]    \oplus P_L[14]    \oplus P_L[8]    \oplus P_L[3] \oplus  \\
+& U_{4R}[25] \oplus U_{4R}[14] \oplus U_{4R}[8] \oplus U_{4R}[3]  \oplus \\ 
+& P_R[17]    \oplus U_{4L}[17] = K_1[26] \oplus K_3[26] \\
+\end{align*}\\
+\vspace{3mm}
 \pause
 This bit, $U_{4L}[17]$, is affected by the result of S-Box 1 in round 4. If we guess correctly for the 6 partial subkey bits $K_{4,1}$ to $K_{4,6}$, the 3-round equation will hold with high bias, otherwise it will likely hold with close to 0 bias.\\
-\vspace{5mm}
+\vspace{3mm}
 \pause
-Thus, this attack will give us $6$ of the $56$ key bits. \pause What this means in terms of time saved over exhaustive search is this: If it takes a year to find a key through exhaustive search of $2^{56}$ bits, after this attack it will only take $5$ days to exhaustively search the remaining $2^{50}$ bits.
+Thus, this attack will give us $6$ of the $56$ key bits. If it takes a year to find a key through exhaustive search of $2^{56}$ bits, it only takes $5$ days to exhaustively search $2^{50}$ bits.
+\end{column}
+
+\end{columns}
 \end{frame}
 
 \begin{frame}
