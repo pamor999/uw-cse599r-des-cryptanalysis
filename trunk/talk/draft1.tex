@@ -329,6 +329,7 @@ Basic Definitions for the Linear attack
 \item{$C_i$ where $i = 1, 2, \dots 16$ as the $i$-th ciphertext bit}
 \item{$U_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th input bit to the $j$-th round of SPN}
 \item{$V_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th output bit of the $j$-th round of SPN}
+\item{$K_{j,i}$ where $j = 1, 2, 3, 4$ and $i = 1, 2, \dots 16$ be the $i$-th bit of the round key for the $j$-th round of SPN}
 \end{itemize}
 \end{frame}
 
@@ -424,7 +425,7 @@ $\qquad X_1 \oplus X_2 = 1$ is an affine expression equivalent to $X_1 \neq X_2$
 \vspace{5mm}
 \pause Assume the following probability distribution
 \[ Pr(X_1 = i)  = \left\{ \begin{array}{ll}
-         p_1 & \mbox{$i = 0$};\\
+         p_1 & \mbox{$i = 0$}\\
          (1 - p_1) & \mbox{$i = 1$}.\end{array} \right. \] 
 \[ Pr(X_2 = i)  = \left\{ \begin{array}{ll}
          p_2 & \mbox{$i = 0$};\\
@@ -522,7 +523,7 @@ Consider the first 2 rounds:
 \begin{frame}
 Using this principle we can write the following equation over 3 rounds of SPN:
 \[ U_{4,6} \oplus U_{4,8} \oplus U_{4,14} \oplus U_{4, 16} \oplus P_5 \oplus P_7 \oplus P_8 = \Sigma K \]
-\pause Where $\Sigma K$ is the sum over some key bits. Note that Since the key is fixed, $\Sigma K = 0$ or $1$ and thus we can ignore it since we only care about the bias.\\
+\pause Where $\Sigma K$ is the sum over some key bits. Note that since the key is fixed, $\Sigma K = 0$ or $1$ and thus we can ignore it since we only care about the bias.\\
 \vspace{5mm}
 \pause The magnitude of the bias of the above expression, by the Piling Up Principle, is $1/32$. \\
 \vspace{5mm}
@@ -898,8 +899,8 @@ Let $P_L$ and $P_R$ be the left and right plaintext bits. Let $C_L$ and $C_R$ be
 \pause Using the S-Box 5 approximation and the Piling Up Principle we can combine the approximations to get
 \begin{align*}
  P_L[25] & \oplus P_L[14] \oplus P_L[8] \oplus P_L[3] \oplus \\
-         & U_{4L}[25] \oplus U_{4L}[14] \oplus U_{4L}[8] \oplus U_{4L}[3] \oplus \\
-			& P_R[17] \oplus U_{4R}[17] = K_1[26] \oplus K_3[26] \\
+         & U_{4R}[25] \oplus U_{4R}[14] \oplus U_{4R}[8] \oplus U_{4R}[3] \oplus \\
+			& P_R[17] \oplus U_{4L}[17] = K_1[26] \oplus K_3[26] \\
 \end{align*}
 
 \pause The bias magnitude for this expression is
@@ -912,13 +913,13 @@ Let $P_L$ and $P_R$ be the left and right plaintext bits. Let $C_L$ and $C_R$ be
 We perform the attack on the 4-round DES similarly to how we performed the attack on 4-round SPN, by ``undoing'' the last round.\\
 \vspace{5mm}
 \pause
-Note that in the last round, $U_{4L}$ bits are not changed, only $U_{4R}$ bits are affected. Note also that there is only one $U_{4R}$ bit the 3-round equation.
+Note that in the last round, $U_{4R}$ bits are not changed, only $U_{4L}$ bits are affected. Note also that there is only one $U_{4L}$ bit the 3-round equation.
 \begin{align*} 
-P_L[25] \oplus P_L[14] \oplus P_L[8] \oplus & P_L[3] \oplus U_{4L}[25] \oplus U_{4L}[14] \oplus U_{4L}[8] \\ & \oplus U_{4L}[3] \oplus P_R[17] \oplus U_{4R}[17] = K_1[26] \oplus K_3[26]
+P_L[25] \oplus P_L[14] \oplus P_L[8] \oplus & P_L[3] \oplus U_{4R}[25] \oplus U_{4R}[14] \oplus U_{4R}[8] \\ & \oplus U_{4R}[3] \oplus P_R[17] \oplus U_{4L}[17] = K_1[26] \oplus K_3[26]
 \end{align*}
 \vspace{5mm}
 \pause
-This bit, $U_{4R}[17]$, is affected by the result of S-Box 1 in round 4. If we guess correctly for the 6 partial subkey bits $K_{4,1}$ to $K_{4,6}$, the 3-round equation will hold with high bias, otherwise it will likely hold with close to 0 bias.\\
+This bit, $U_{4L}[17]$, is affected by the result of S-Box 1 in round 4. If we guess correctly for the 6 partial subkey bits $K_{4,1}$ to $K_{4,6}$, the 3-round equation will hold with high bias, otherwise it will likely hold with close to 0 bias.\\
 \vspace{5mm}
 \pause
 Thus, this attack will give us $6$ of the $56$ key bits. \pause What this means in terms of time saved over exhaustive search is this: If it takes a year to find a key through exhaustive search of $2^{56}$ bits, after this attack it will only take $5$ days to exhaustively search the remaining $2^{50}$ bits.
@@ -1088,24 +1089,19 @@ Note that throughout this discussion we have assumed that the S-Boxes were indep
 This assumption worked well for us in practice, but is not necessarily true. We could have proceeded differently without this assumption - [see John Manferdelli's Boolean Functions slides]
 \end{frame}
 
-\begin{frame}
-What if that is false ? ... Discussion ...
-
-\end{frame}
-
 \subsection{Links between the Attacks}
 \begin{frame}
 Linear Resistance:\\
-\vspace{5mm}
-Thm: A function $F: GF(2)^p \rightarrow GF(2)^q$is perfect nonlinear (ie bias is 0) if and only if it is \textit{bent}. \\
 \vspace{3mm}
-Thm: Bent functions exist only for $p \geq 2q$ and $p$ even. 
+Let $F: GF(2)^p \rightarrow GF(2)^q$.\\
+\vspace{3mm}
+Defn: A function F is bent if its Walsh transform $\mathcal{W}\{F\}$ is $\pm 2^{p/2}$.\\
+\vspace{3mm}
+Thm: A function F is perfect nonlinear (ie bias is 0) if and only if it is \textit{bent}. \\
+\vspace{3mm}
+Thm: Bent functions exist only for $p \geq 2q$ and $p$ even. \\
 \vspace{5mm}
-\end{frame}
-
-\begin{frame}
-Mathematically and while implementing ...
-
+To sumarize: When $p\geq 2q$ and $p$ even, differential-resistant is equivalent to linear resistant, and to vectorial Bentness.
 \end{frame}
 
 \subsection{Take Home}
@@ -1132,11 +1128,15 @@ AES, which replaced DES, provides an 8-Bit S-Box in the SubBytes step and higher
 \begin{frame}
 References:\\
 \vspace{5mm}
-Matsui\\
-Beham, Shamir\\
-Heys
-Chabaud, Vaudenay\\
-Manferdelli
+M. Matsui, "Linear Cryptanalysis Method for DES Cipher", \textit{Advances in Cryptology - EUROCRYPT '93 (Lecture Notes in Computer Science no. 765),} Springer-Verlag, pp. 38\\
+\vspace{2mm}
+E Biham And A. Shamir, "Differential Cryptanalysis of DES-like Cryptosystems", \textit{Journal of Cryptology}, vol 4, no 1, pp. 3-72, 1991.\\
+\vspace{2mm}
+H. Heys, "A Tutorial on Linear and Differential Cryptanalysis"\\
+\vspace{2mm}
+F. Chabaud And S. Vaudenay, "Links Between Differential and Linear Cryptanalysis", \textit{Advances in Cryptology - EUROCRYPT '94 (Lexture Notes in Computer Science no. 950)}, Springer-Verlag, pp. 356-365, 1995.\\
+\vspace{2mm}
+J. Manferdelli, UW Cryptography Lecture Notes
 \end{frame}
 
 \begin{frame}
