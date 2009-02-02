@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -274,24 +275,36 @@ public class DifferentialCryptanalysis {
     int numRounds = 4;
 
     // set the key
-    BitSet key1 = Util.toBitSet(0x1234, 16);
-    BitSet key2 = Util.toBitSet(0x8743, 16);
-    BitSet key3 = Util.toBitSet(0xFAC3, 16);
-    BitSet key4 = Util.toBitSet(0xECAB, 16);
-    BitSet key12 = Util.concatenate(key1, 16, key2, 16);
-    BitSet key34 = Util.concatenate(key3, 16, key4, 16);
-    BitSet key = Util.concatenate(key12, 32, key34, 32);
+    BitSet key = Util.concatenate(new BitSet[] { Util.toBitSet(0x1234, 16),
+        Util.toBitSet(0x8743, 16), Util.toBitSet(0xFAC3, 16),
+        Util.toBitSet(0xECAB, 16) }, 16);
 
     // print the actual key bits
     DesImpl des = new DesImpl();
     BitSet K4 = des.KeySchedule(key, 4);
     BitSet K4_S1 = K4.get(0, 6);
 
-    System.out.println("actual subkey is "
-        + Integer.toHexString(Util.toInteger(K4_S1, 6)));
-
     // generate the pairs
-    int numPairs = 1000;
+    int numPairs = 10000;
+    
+    // print info 
+    System.out.println("4-round DES Differential Cryptanalysis.");
+    System.out.println("Using " + numPairs + " pairs.");
+    System.out.println("****************");
+    System.out.println("Using Key:");
+    Util.printBitSet(key, 64);
+    System.out.println("****************");
+    System.out.println("Real partial subkey:");
+    System.out.println("\tK4[1-6]:\t" +
+        Integer.toHexString(Util.toInteger(K4_S1, 6)).toUpperCase());
+    System.out.println("****************");
+    System.out.println("Press Enter to run differential attack...");
+    try {
+      System.in.read();
+    } catch(IOException exn) {
+      
+    }
+    
     System.out.print("Generating " + numPairs + " pairs...");
     List<BitSet[]> pairs = generateRandomPairs(numPairs, key, numRounds);
     System.out.println("done");

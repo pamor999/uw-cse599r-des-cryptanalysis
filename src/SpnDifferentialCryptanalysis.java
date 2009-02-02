@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -83,6 +84,25 @@ public class SpnDifferentialCryptanalysis {
 
     // 1 - generate 10000 pairs
     int pairct = 10000;
+    
+    // print out the real key bits and some info
+    System.out.println("4-Round SPN Differential Cryptanalysis.");
+    System.out.println("Using " + pairct + " pairs.");
+    BitSet realPskA = roundKeys[4].get(4, 8);
+    BitSet realPskB = roundKeys[4].get(12, 16);
+    System.out.println("Real partial subkey values:");
+    System.out.println("\tK4[4-8]:\t" + 
+        Integer.toHexString(Util.toInteger(realPskA, 4)));
+    System.out.println("\tK4[12-16]:\t" + 
+        Integer.toHexString(Util.toInteger(realPskB, 4)));
+    System.out.println("**********************");
+    System.out.println("Press Enter to run differential attack...");
+    try {
+      System.in.read();
+    } catch (IOException exn) {
+    
+    }
+      
 
     SpnDifferentialCryptanalysis slc = new SpnDifferentialCryptanalysis();
     List<BitSet[]> pairs = slc.generateChosenPairs(pairct, roundKeys);

@@ -17,9 +17,9 @@ public class LinearCryptanalysis {
    * @param args
    */
   public static void main(String[] args) {
-    //DesLinearAttack4Round();
+    DesLinearAttack4Round();
     // PrintNSForAll();
-    MatsuiEqn5Distribution();
+    // MatsuiEqn5Distribution();
     // testFinalRound();
   }
 
@@ -289,16 +289,22 @@ public class LinearCryptanalysis {
     DesImpl des = new DesImpl();
     BitSet K4 = des.KeySchedule(key, 4);
 
-    // print info about the real key
+    
+    int numPairs = 1000;
+    
+    // print info 
+    System.out.println("4-round DES Linear Cryptanalysis.");
+    System.out.println("Using " + numPairs + " pairs.");
     System.out.println("****************");
     System.out.println("Using Key:");
     Util.printBitSet(key, 64);
     System.out.println("****************");
+    System.out.println("Real partial subkey:");
     BitSet K4_S1 = K4.get(0, 6);
-    System.out.println("Actual Partial Subkey:" +
+    System.out.println("\tK4[1-6]:\t" +
         Integer.toHexString(Util.toInteger(K4_S1, 6)).toUpperCase());
     System.out.println("****************");
-    System.out.println("Press Enter to start...");
+    System.out.println("Press Enter to run linear attack...");
     try {
       System.in.read();
     } catch(IOException exn) {
@@ -306,7 +312,6 @@ public class LinearCryptanalysis {
     }
 
     // generate the pairs
-    int numPairs = 1000;
     System.out.print("Generating " + numPairs + " pairs...");
     List<BitSet[]> pairs = generateRandomPairs(numPairs, key, numRounds);
     System.out.println("done");
