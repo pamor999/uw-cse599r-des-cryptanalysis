@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -169,16 +170,31 @@ public class DifferentialCryptanalysis {
     // print the actual key bits
     DesImpl des = new DesImpl();
     BitSet K4 = des.KeySchedule(key, 4);
+    int numPairs = 16;
     
-    System.out.print("Actual key is   ");
-    	    
+    // print info 
+    System.out.println("4-round DES Linear Cryptanalysis.");
+    System.out.println("Using " + numPairs + " pairs.");
+    System.out.println("****************");
+    System.out.println("Using Key:");
+    Util.printBitSet(key, 64);
+    System.out.println("****************");
+    System.out.println("Real round 4 key:");
     for (int i = 0; i < 8; i++){
-    	BitSet K4_S = K4.get(6*i, 6*(i+1));
-    	System.out.print(Integer.toHexString(Util.toInteger(K4_S, 6)) + " ");
+      BitSet K4_S = K4.get(6*i, 6*(i+1));
+      System.out.print("\tS-Box " + (i+1) + ":\t");
+      System.out.print(Integer.toHexString(Util.toInteger(K4_S, 6)) + " ");
+      System.out.println();
+    }
+    System.out.println("****************");
+    System.out.println("Press Enter to run linear attack...");
+    try {
+      System.in.read();
+    } catch(IOException exn) {
+      
     }
     
     // generate the pairs
-    int numPairs = 16;
     System.out.println("");
     System.out.println("Generating " + numPairs + " pairs...");
     List<BitSet[]> pairs = generateRandomPairs(numPairs, key, numRounds);
@@ -191,7 +207,6 @@ public class DifferentialCryptanalysis {
 	    }
     }
     
-    int count = 0;
     for (BitSet[] pair : pairs) {
 //      if (count++ % (numPairs / 100) == 0) {
 //        System.out.print(((int) (count / ((double) numPairs) * 100)) + "%\n");
