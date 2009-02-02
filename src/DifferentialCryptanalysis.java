@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -13,7 +12,6 @@ public class DifferentialCryptanalysis {
 
   public static void main(String[] args) {
     DesDifferentialAttack4Round();
-    // DesDifferentialAttack3Round();
     // PrintNSforAll();
   }
 
@@ -151,12 +149,13 @@ public class DifferentialCryptanalysis {
     return sets;
   }
 
+
   /**
  * 
  */
-  public static void DesDifferentialAttack3Round() {
-    // do analysis for 3-round DES
-    int numRounds = 3;
+  public static void DesDifferentialAttack4Round() {
+    // do analysis for 4-round DES
+    int numRounds = 4;
 
     // set the key
     BitSet key1 = Util.toBitSet(0x1234, 16);
@@ -169,229 +168,119 @@ public class DifferentialCryptanalysis {
 
     // print the actual key bits
     DesImpl des = new DesImpl();
-    BitSet K3 = des.KeySchedule(key, 3);
-    BitSet K3_S5 = K3.get(24, 30);
-
-    System.out.println("actual subkey is "
-        + Integer.toHexString(Util.toInteger(K3_S5, 6)));
-
-    // generate the pairs
-    int numPairs = 10000;
-    System.out.print("Generating " + numPairs + " pairs...");
-    List<BitSet[]> pairs = generateRandomPairs(numPairs, key, numRounds);
-    System.out.println("done");
-    System.out.println("Good pairs: " + pairs.size());
-
-    int[] counts = new int[64];
-    for (int i = 0; i < counts.length; i++) {
-      counts[i] = 0;
-    }
-    int count = 0;
-    for (BitSet[] pair : pairs) {
-      if (count++ % (numPairs / 100) == 0) {
-        System.out.print(((int) (count / ((double) numPairs) * 100)) + "%\n");
-      }
-
-      BitSet C1L = pair[0].get(0, 32);
-      BitSet C1R = pair[0].get(32, 64);
-      BitSet C2L = pair[1].get(0, 32);
-      BitSet C2R = pair[1].get(32, 64);
-
-      for (int i = 0; i < 64; i++) {
-        // guess the key for Sbox 5
-        BitSet partialSubkeyGuess = Util.toBitSet(i, 6);
-        // pad it
-        BitSet subKeyGuess = Util.concatenate(Util.toBitSet(0, 24), 24,
-            partialSubkeyGuess, 6);
-        subKeyGuess = Util.concatenate(subKeyGuess, 30, Util.toBitSet(0, 18),
-            18);
-
-        // now invert the final round with it
-        BitSet C1L_prev = Util.copyBitSet(C1L, 32);
-        BitSet C1R_prev = Util.copyBitSet(C1R, 32);
-        BitSet C2L_prev = Util.copyBitSet(C2L, 32);
-        BitSet C2R_prev = Util.copyBitSet(C2R, 32);
-
-        C1L_prev.xor(des.Feistel(C1R_prev, subKeyGuess));
-        C2L_prev.xor(des.Feistel(C2R_prev, subKeyGuess));
-
-        // swap the result to undo the last Tau
-        BitSet temp1 = C1L_prev;
-        C1L_prev = C1R_prev;
-        C1R_prev = temp1;
-
-        BitSet temp2 = C2L_prev;
-        C2L_prev = C2R_prev;
-        C2R_prev = temp2;
-
-        // compute the 2-round expression:
-        BitSet delta_U3R = Util.copyBitSet(C1R_prev, 32);
-        delta_U3R.xor(C2R_prev);
-
-        boolean lhs = (delta_U3R.get(2)) ^ (!delta_U3R.get(7))
-            ^ (!delta_U3R.get(13)) ^ (!delta_U3R.get(24));
-
-        if (lhs == false) {
-          counts[i]++;
-        }
-      }
-    }
-
-    // 5 - determine the biases
-    double[] prob = new double[counts.length];
-    for (int i = 0; i < counts.length; i++) {
-      prob[i] = counts[i] / ((double) numPairs);
-    }
-
-    // 6 - print the results
-    int maxi = 0;
-    double maxprob = 0;
-
-    System.out.println();
-    System.out.println("Partial subkey bits : bias");
-    for (int i = 0; i < prob.length; i++) {
-
-      System.out.print(Integer.toHexString(i));
-      System.out.println(":\t" + prob[i]);
-
-      if (prob[i] >= maxprob) {
-        maxprob = prob[i];
-        maxi = i;
-      }
-    }
-
-    System.out.println();
-    System.out.println();
-    System.out.println("Best candidate partial subkey is "
-        + Integer.toHexString(maxi) + " with bias " + maxprob);
-
-  }
-
-  /**
- * 
- */
-  public static void DesDifferentialAttack4Round() {
-    // do analysis for 4-round DES
-    int numRounds = 4;
-
-    // set the key
-    BitSet key = Util.concatenate(new BitSet[] { Util.toBitSet(0x1234, 16),
-        Util.toBitSet(0x8743, 16), Util.toBitSet(0xFAC3, 16),
-        Util.toBitSet(0xECAB, 16) }, 16);
-
-    // print the actual key bits
-    DesImpl des = new DesImpl();
     BitSet K4 = des.KeySchedule(key, 4);
-    BitSet K4_S1 = K4.get(0, 6);
-
-    // generate the pairs
-    int numPairs = 10000;
     
-    // print info 
-    System.out.println("4-round DES Differential Cryptanalysis.");
-    System.out.println("Using " + numPairs + " pairs.");
-    System.out.println("****************");
-    System.out.println("Using Key:");
-    Util.printBitSet(key, 64);
-    System.out.println("****************");
-    System.out.println("Real partial subkey:");
-    System.out.println("\tK4[1-6]:\t" +
-        Integer.toHexString(Util.toInteger(K4_S1, 6)).toUpperCase());
-    System.out.println("****************");
-    System.out.println("Press Enter to run differential attack...");
-    try {
-      System.in.read();
-    } catch(IOException exn) {
-      
+    System.out.print("Actual key is   ");
+    	    
+    for (int i = 0; i < 8; i++){
+    	BitSet K4_S = K4.get(6*i, 6*(i+1));
+    	System.out.print(Integer.toHexString(Util.toInteger(K4_S, 6)) + " ");
     }
     
-    System.out.print("Generating " + numPairs + " pairs...");
+    // generate the pairs
+    int numPairs = 16;
+    System.out.println("");
+    System.out.println("Generating " + numPairs + " pairs...");
     List<BitSet[]> pairs = generateRandomPairs(numPairs, key, numRounds);
-    System.out.println("done");
     System.out.println("Good pairs: " + pairs.size());
 
-    int[] counts = new int[64];
-    for (int i = 0; i < counts.length; i++) {
-      counts[i] = 0;
+    int[][] counts = new int[8][64];
+    for (int k = 0; k < 8; k++){
+	    for (int i = 0; i < counts.length; i++) {
+	      counts[k][i] = 0;
+	    }
     }
+    
     int count = 0;
     for (BitSet[] pair : pairs) {
-      if (count++ % (numPairs / 100) == 0) {
-        System.out.print(((int) (count / ((double) numPairs) * 100)) + "%\n");
-      }
+//      if (count++ % (numPairs / 100) == 0) {
+//        System.out.print(((int) (count / ((double) numPairs) * 100)) + "%\n");
+//      }
 
       BitSet C1L = pair[0].get(0, 32);
       BitSet C1R = pair[0].get(32, 64);
       BitSet C2L = pair[1].get(0, 32);
       BitSet C2R = pair[1].get(32, 64);
 
-      for (int i = 0; i < 64; i++) {
-        // guess the key for Sbox 1
-        BitSet partialSubkeyGuess = Util.toBitSet(i, 6);
-        // pad it
-        BitSet subKeyGuess = Util.concatenate(partialSubkeyGuess, 6, Util
-            .toBitSet(0, 24), 24);
-        subKeyGuess = Util.concatenate(subKeyGuess, 30, Util.toBitSet(0, 18),
-            18);
-
-        // now invert the final round with it
-        BitSet C1L_prev = Util.copyBitSet(C1L, 32);
-        BitSet C1R_prev = Util.copyBitSet(C1R, 32);
-        BitSet C2L_prev = Util.copyBitSet(C2L, 32);
-        BitSet C2R_prev = Util.copyBitSet(C2R, 32);
-
-        C1L_prev.xor(des.Feistel(C1R_prev, subKeyGuess));
-        C2L_prev.xor(des.Feistel(C2R_prev, subKeyGuess));
-
-        // swap the result to undo the last Tau
-        BitSet temp1 = C1L_prev;
-        C1L_prev = C1R_prev;
-        C1R_prev = temp1;
-
-        BitSet temp2 = C2L_prev;
-        C2L_prev = C2R_prev;
-        C2R_prev = temp2;
-
-        // compute the 2-round expression:
-        BitSet delta_U4R = Util.copyBitSet(C1R_prev, 32);
-        delta_U4R.xor(C2R_prev);
-
-        boolean lhs = (delta_U4R.get(16)) ^ (delta_U4R.get(30))
-            ^ (!delta_U4R.get(8)) ^ (!delta_U4R.get(22));
-
-        if (lhs == false) {
-          counts[i]++;
-        }
-      }
+      // calculate the input of S-Boxes - Round 4
+      BitSet W1 = des.E(C1R);
+      BitSet W2 = des.E(C2R);
+      
+      // calculate the output of S-Boxes - Round 4
+      BitSet delta_D = Util.copyBitSet(C1L, 32);
+      delta_D.xor(C2L);
+      BitSet delta_Y = des.PermuteCInv(delta_D);
+      
+      
+      for (int sbox = 0; sbox < 8; sbox++){
+		  for (int i = 0; i < 64; i++) {
+		    // guess the key for Sbox
+		    BitSet partialSubkeyGuess = Util.toBitSet(i, 6);
+		    
+		    // inputs to the S-Box
+		    BitSet X1 = W1.get(6*sbox,6*(sbox+1));
+		    X1.xor(partialSubkeyGuess);
+		    BitSet X2 = W2.get(6*sbox,6*(sbox+1));
+		    X2.xor(partialSubkeyGuess);
+		    
+		    // calculate predicted output of S-Box
+		    BitSet pred_Y1 = des.SBoxSingle(sbox, X1);
+		    BitSet pred_Y2 = des.SBoxSingle(sbox, X2);
+		    
+		    BitSet pred_deltaY = Util.copyBitSet(pred_Y1, 4);
+		    pred_deltaY.xor(pred_Y2);
+		    
+		    // check for a match with original delta_Y
+		    BitSet orig_deltaY = delta_Y.get(4*sbox,8*(sbox+1));
+		    
+		    boolean lhs = Util.equalsBitSet(pred_deltaY, orig_deltaY, 4);
+		    
+		    if (lhs == true) {
+		      counts[sbox][i]++;
+		    }
+		  }
+      	}
     }
 
-    // 5 - determine the biases
-    double[] prob = new double[counts.length];
-    for (int i = 0; i < counts.length; i++) {
-      prob[i] = counts[i] / ((double) numPairs);
+    // 5 - determine the probabilities
+    double[][] prob = new double[8][64];
+    for (int k = 0; k < 8; k++){
+	    for (int i = 0; i < 64; i++) {
+	      prob[k][i] = counts[k][i] / ((double) numPairs);
+	    }
     }
 
     // 6 - print the results
-    int maxi = 0;
-    double maxprob = 0;
-
+    
     System.out.println();
-    System.out.println("Partial subkey bits : bias");
-    for (int i = 0; i < prob.length; i++) {
-
-      System.out.print(Integer.toHexString(i));
-      System.out.println(":\t" + prob[i]);
-
-      if (prob[i] >= maxprob) {
-        maxprob = prob[i];
-        maxi = i;
-      }
+    System.out.println();
+    System.out.println("Best candidate subkeys are");
+    
+    
+    for (int k = 0; k < 8; k++){
+    	int maxi = 0;
+        double maxprob = 0;
+        
+	    System.out.println();
+	    System.out.println("Partial subkey bits : probability");
+	    for (int i = 0; i < 64; i++) {
+	
+	      System.out.print(Integer.toHexString(i));
+	      System.out.println(":\t" + prob[k][i]);
+	
+	      if (prob[k][i] >= maxprob) {
+	        maxprob = prob[k][i];
+	        maxi = i;
+	      }
+	    }
+	    
+	    System.out.println();
+	    System.out.println();
+	    System.out.println("S-Box " + (k+1) + " : " + Integer.toHexString(maxi) + " with bias " + maxprob);
+	    System.out.println();
+	    System.out.println();
+	    
     }
-
-    System.out.println();
-    System.out.println();
-    System.out.println("Best candidate partial subkey is "
-        + Integer.toHexString(maxi) + " with bias " + maxprob);
 
   }
 }

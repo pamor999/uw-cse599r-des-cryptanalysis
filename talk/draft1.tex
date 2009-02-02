@@ -1027,9 +1027,38 @@ Input Difference: $\Delta P = 20\:00\:00\:00\:00\:00\:00\:00$
 \vspace{5mm}
 \pause Differential Characteristic
 \[ 20\:00\:00\:00\:00\:00\:00\:00 \rightarrow A0\:06\:18\:A0\:00\:00\:80\:02 \]
+
 \end{column}
 \end{columns}
 \end{frame}
+
+\begin{frame}
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\includegraphics[totalheight=0.8\textheight]{des_diff_char.jpg}
+\end{figure}
+\end{column}
+
+\begin{column}{0.6\textwidth}
+\vspace{2mm}
+\pause Note: $00\:00\:80\:02$ implies difference of 2 bits which are both related to S-Box $S_1$ in round 4.
+
+\vspace{2mm}
+\pause Hence, in round 4
+\[ D' = \Delta C_L \oplus 00\:00\:80\:02 \]
+\pause and hence for $S_2, ... , S_8$, outputs are
+\[ \Delta Y = P^{-1}(\Delta C_L) = S_{box}(E(C_R) \oplus K_4) \]
+
+\vspace{2mm}
+So, just guess the {\it target partial subkey} for $S_2, ... S_8$ individually, \pause and compute their predicted $\Delta Y$ with a number of plaintext pairs. 
+
+\vspace{2mm}
+\pause This will ``undo'' round 4 and  the maximum probability of satisfying the 3 round differential characteristic will indicate a correct guess.
+\end{column}
+\end{columns}
+\end{frame}
+
 
 \begin{frame}
 Probabilistic Analysis
@@ -1046,42 +1075,15 @@ Constructing the Difference Distribution tables for the S-Boxes and analyzing th
 \end{itemize}
 
 \vspace{3mm}
-\pause Differential Characteristic: $20\:00\:00\:00\:00\:00\:00\:00 \rightarrow A0\:06\:18\:A0\:00\:00\:80\:02$ holds with probability
-\[ p_D \: = \: (10/64) \times (16/64) \times (12/64) \times (12/64) \: = \: 45/32768 \approx 0.001373 \]
+\pause Differential Characteristic for $\Delta C_L$: $00\:00\:00\:00 \rightarrow 00\:00\:80\:02$ holds with probability
+\[ p_D \: = \: 10/64 \: \approx \: 0.16 \: \gg 1/2^{32} \]
 
 \vspace{2mm}
-\pause Note: $p_D$ is much higher than the random distribution probability $1/2^{64}$ and we hope to exploit this situation to break DES.
-
-\end{frame}
-
-\begin{frame}
-\begin{columns}
-\begin{column}{0.4\textwidth}
-\begin{figure}
-\includegraphics[totalheight=0.8\textheight]{des_diff_char.jpg}
-\end{figure}
-\end{column}
-
-\begin{column}{0.6\textwidth}
-Differential Characteristic of DES
-\[ 20\:00\:00\:00\:00\:00\:00\:00 \rightarrow A0\:06\:18\:A0\:00\:00\:80\:02 \]
-
-\pause Note: The right half of the round 3 characteristic output is $00\:00\:80\:02$. 
-
-\vspace{2mm}
-\pause Thus, the right halves of the ciphertexts at this round differ by 2 bits, and these are related to S-Box $S_1$ in round 4.
-
-\vspace{2mm}
-\pause Hence, we just need to guess the {\it target partial subkey} $K_{4,1}, ..., K_{4,6}$ for $S_1$, i.e. the first 6 bits of $K_4$. 
-
-\vspace{2mm}
-\pause Thereafter, we can ``undo'' round 4 using this guess and  the maximum probability of satisfying the 3 round differential characteristic will indicate a correct guess.
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-How many pairs do we need? (Probabilistic justification)
+\pause
+\begin{itemize}[<+->]
+\item{How many pairs do we need?}
+\item{Approximately $2^4 = 16$ for $100\%$ success}
+\end{itemize}
 
 \end{frame}
 
@@ -1138,6 +1140,10 @@ The problems of DES originated in two aspects:
 \item{Diffusion between rounds is just not fast enough}
 \end{itemize}
 AES, which replaced DES, provides an 8-Bit S-Box in the SubBytes step and higher diffusion through the ShiftRows and MixColumns steps. 
+\end{frame}
+
+\begin{frame}
+Matsui rearrangement of S-Boxes ... Construction of S-Boxes ... IBM knew Diff 17 years earlier ... $10^44$ is closer to $10$ than to $10^45$ ...
 \end{frame}
 
 \begin{frame}
