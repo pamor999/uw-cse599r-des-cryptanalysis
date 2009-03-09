@@ -970,7 +970,11 @@ How many pairs do we need? (Continued)
 Using the calculation from the previous slide, we see that for a 4-round DES, our equation holds with bias of about 1 in 4. \pause Thus we will need about $16\times 4^2 = 256$ pairs for the attack to have near perfect chance of success.
 
 \vspace{3mm}
-\pause For a full 16-round DES, the best approximation has bias $\sim 1.19\times 10^{-22}$, thus we would need on the order of $2^{47}$ plaintext-ciphertext pairs.
+\pause For a full 16-round DES, the best approximation has bias $\sim 1.19\times 10^{-22}$, thus we would need on the order of $2^{47}$ plaintext-ciphertext pairs.\\
+\vspace{3mm}
+The 15-round best expression has the following form:
+\[ P_L[8] \oplus P_L[14] \oplus P_L[25] \oplus P_R[16] \oplus P_R[20] \oplus \]
+\[  U_{16L}[17] \oplus U_{16R}[3] \oplus U_{16R}[8] \oplus U_{16R}[14] \oplus U_{16R}[25] = \Sigma K \]
 \end{frame}
 
 \begin{frame}
