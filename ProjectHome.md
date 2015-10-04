@@ -1,0 +1,1 @@
+This is an implementation of linear and differential cryptanalysis techniques as applied to simple SPN network ciphers and DES.
